@@ -94,7 +94,7 @@ El dataset ajustado tiene 193.910 registros. El 20,93% de estos posee radicació
 
 ## Ajuste de primera versión con apoyo de IA
 
-Se desarrolló un primer ejercicio del proyecto que requería bastantes ajustes (`model_selection_classification_template.ipynb`). Con base en los resultados de la primera fase, y con el apoyo de Claude, se obtuvo una versión optimizada que constituye el resultado definitivo del proyecto (`Confiar_prediccion_retiro_v2.ipynb`).
+Se desarrolló un primer ejercicio del proyecto que contenía buena parte de lo dicho hasta ahora en este README.md, pero que también requería bastantes ajustes (`model_selection_classification_template.ipynb`). Con base en los resultados de la primera fase, y con el apoyo de Claude, se obtuvo una versión optimizada que constituye el resultado definitivo del proyecto (`Confiar_prediccion_retiro_v2.ipynb`).
 
 ## Tareas pendientes
 
