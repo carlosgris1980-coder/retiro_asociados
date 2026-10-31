@@ -12,15 +12,16 @@
   mayor cantidad de aportes con el presupuesto de la campaña. El asesor conserva la decisión final.
 
 - **dataset_source:** datos internos de Confiar, anonimizados por integrantes del grupo que trabajan en la cooperativa
-  (`bd_confiar_2.xlsx`; asociados vinculados entre 2017 y 2025, un registro por asociado). **Permiso de uso académico:
-  por confirmar.**
+  (`bd_confiar_2.xlsx`; asociados vinculados entre 2017 y 2025, un registro por asociado). Montos en millones de pesos.
+  Permiso de uso académico: a cargo del grupo.
 
 - **dataset_rows:** 194.073
 
 - **dataset_columns:** 25 (21 variables, el objetivo `sol_retiro`, el `Nit` y dos fechas)
 
 - **target:** `sol_retiro` (1 = radicó solicitud de retiro total). 40.591 asociados radicaron (**20,9 %**). El 0 mezcla
-  a 129.794 asociados activos en dic-2025 y a 23.688 que salieron sin radicar. Unidad de análisis: **el asociado** (una
+  a 129.794 asociados activos en dic-2025 y a 23.688 cuyo vínculo terminó la cooperativa de forma unilateral (no son
+  retiros voluntarios; se medirá el modelo con y sin ellos). Unidad de análisis: **el asociado** (una
   fila cada uno); la partición se hace por asociado.
 
 - **problem_type:** clasificación binaria (desbalance moderado), usada como **ranking por probabilidad**.

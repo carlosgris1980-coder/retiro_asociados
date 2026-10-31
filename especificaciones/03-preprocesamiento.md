@@ -32,7 +32,7 @@
 | # (de la tabla del EDA) | Columna(s) | Problema | Regla exacta (con el umbral o valor) | Función en `src/proyecto/data/cleaning.py` | Prueba en `tests/test_cleaning.py` |
 |---|---|---|---|---|---|
 | 3 | `anio_mes_proceso`, `cohorte` | Delatan la respuesta | Se eliminan; antes se guardan `process_year` y `stratum` como auxiliares | `add_time_context`, `drop_time_columns` | `test_time_context_marks_exit_without_request_and_stratum`, `test_drop_time_columns_removes_both_dates` |
-| 5 | `sol_retiro` + fecha | El 0 mezcla activos y salidas sin radicar | `exit_without_request` = 1 si `sol_retiro` = 0 y el registro es anterior al último mes del panel | `add_time_context` | `test_time_context_marks_exit_without_request_and_stratum` |
+| 5 | `sol_retiro` + fecha | El 0 mezcla activos y retiros unilaterales de la cooperativa (confirmado) | `exit_without_request` = 1 si `sol_retiro` = 0 y el registro es anterior al último mes del panel | `add_time_context` | `test_time_context_marks_exit_without_request_and_stratum` |
 | 6 | `edad` | 39 valores imposibles | Fuera de [14, 100] → NaN; la fila se conserva | `mask_implausible` | `test_mask_implausible_age_keeps_rows_and_sets_missing` |
 | 7 | `prom_saldo_cartera`, `prom_saldo_ahorro_prog`, `prom_saldo_cta` | Cero = sin producto | `has_loan`, `has_prog_savings`, `has_account` = 1 si el promedio > 0 | `add_product_flags` | `test_product_flags_read_zero_balance_as_no_product` |
 | 9 | `ingresos` | Salario mínimo exacto del año | `income_is_min_wage` = 1 si el ingreso es igual (±1e-6) al SMMLV de algún año 2017–2025 | `flag_min_wage_income` | `test_min_wage_income_flag_matches_only_exact_values` |

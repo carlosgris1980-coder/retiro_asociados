@@ -49,7 +49,7 @@
 | 1 | `Nit` único en las 194.073 filas | Eliminar al cargar; `associate_id` sustituto | Dato personal | `load_raw` / `drop_personal_data` |
 | 2 | Ninguna entidad se repite | Partición por asociado, estratificada, 80/20 | Unidad de análisis | `split_by_group` |
 | 3 | Fuera de dic-2025 radica el 62,7 %; en dic-2025, el 0,6 % | Eliminar `anio_mes_proceso` y `cohorte` | Delatan la respuesta | `drop_time_columns` |
-| 4 | 23.688 salieron sin radicar (12,2 %) | Conservar como 0; marca auxiliar | Medir con y sin en la etapa 4 | `add_time_context` |
+| 4 | 23.688 salieron sin radicar (12,2 %): retiro unilateral de la cooperativa (confirmado) | Conservar como 0; marca auxiliar | No es retiro voluntario; medir con y sin en la etapa 4 | `add_time_context` |
 | 5 | 39 edades fuera de 14–100 | → vacío | Error o centinela | `mask_implausible` |
 | 6 | Ceros = sin producto (51,8 % sin crédito) | Indicadores de tenencia | Distinguir "no tiene" de "poco" | `add_product_flags` |
 | 7 | 23,0 % de ingresos = salario mínimo exacto | Marca auxiliar; sospecha a medir | Pesos nominales ligados al año | `flag_min_wage_income` |

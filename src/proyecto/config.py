@@ -45,8 +45,9 @@ PRODUCT_FLAGS = {  # un cero en el promedio de saldo significa "no tiene el prod
 }
 FEATURES = BASE_FEATURES + list(PRODUCT_FLAGS)
 
-# Sospechosas de fuga (EDA, decisión 8): se calculan sobre una ventana que incluye el mes de radicación.
-# No se descartan por intuición: en la etapa 4 el modelo se mide con y sin ellas.
+# Sospechosas de fuga (EDA, decisión 8): pueden reflejar la preparación del retiro (saldar el crédito, ir a la sucursal).
+# El equipo confirmó que la ventana no incluye el mes de radicación; queda por aclarar por qué los porcentajes dividen
+# por antigüedad + 1. No se descartan por intuición: en la etapa 4 el modelo se mide con y sin ellas.
 LEAKAGE_SUSPECTS = ["porc_meses_publiturno", "prom_asesorias_publiturno", "rel_min-max_saldo_cartera"]
 
 # --- Reglas de limpieza (salen del EDA) -------------------------------------------------------
@@ -64,8 +65,8 @@ MIN_WAGE_BY_YEAR = {
 }
 
 # --- Caso de negocio (notebook 01) ------------------------------------------------------------
-# Unidad monetaria: millones de pesos colombianos. Se infiere de los ingresos (los valores más frecuentes
-# coinciden con el SMMLV de cada año). El equipo debe confirmarlo con la fuente.
+# Unidad monetaria: millones de pesos colombianos (confirmado por el equipo el 31-oct-2026; coincide con los
+# ingresos, cuyos valores más frecuentes son el SMMLV de cada año).
 MONEY_UNIT = "millones de COP"
 
 # Supuestos de trabajo. NO salen de los datos: son el escenario de referencia, se reportan con un análisis

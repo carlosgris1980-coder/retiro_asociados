@@ -44,8 +44,9 @@ Nombre de la "startup": _por definir con el equipo_   Repositorio (público): ht
 - **Datos personales o confidenciales presentes:** ☐ no  ☒ sí → el `Nit` se elimina al cargar (`load_raw`) y se
   reemplaza por `associate_id`. Edad, sexo, zona, educación y ocupación se conservan como variables (sin identificar a
   nadie) y se revisan por equidad en la etapa 7.
-- **Licencia o permiso de uso de los datos:** **por confirmar**: autorización de la cooperativa para uso académico.
-  El archivo `bd_confiar_2.xlsx` está hoy en la raíz del repositorio público; el grupo debe decidir si se retira.
+- **Licencia o permiso de uso de los datos:** a cargo del grupo (autorización de la cooperativa para uso académico y
+  decisión sobre el `bd_confiar_2.xlsx` que está en la raíz del repositorio público).
+- **Unidad monetaria:** millones de pesos (confirmado por el equipo, 31-oct-2026).
 
 ## 4. Métrica
 
@@ -67,12 +68,14 @@ Nombre de la "startup": _por definir con el equipo_   Repositorio (público): ht
   - `anio_mes_proceso` y `cohorte`: el mes del registro delata la respuesta (0,6 % radica si es dic-2025; 62,7 % si no).
     **Eliminadas.**
   - Sospechas a medir con y sin en la etapa 4: `porc_meses_publiturno`, `prom_asesorias_publiturno` y
-    `rel_min-max_saldo_cartera` (la ventana de cálculo incluye el mes de radicación); `ingresos` (pesos nominales,
+    `rel_min-max_saldo_cartera` (pueden reflejar la preparación del retiro; el equipo confirmó que no incluyen el mes de
+    radicación, pero el cálculo divide por antigüedad + 1 y queda por aclarar); `ingresos` (pesos nominales,
     23 % = salario mínimo exacto del año de registro).
 - **Sesgos o equidad:** sexo, edad, zona, educación y ocupación separan poco (AUC univariado ≤ 0,521). Se revisará el
   error por segmento; el modelo no se usa para dejar de atender a ningún grupo.
 - **Datos faltantes o de mala calidad:** sin vacíos de origen (ya tratados por el equipo); 39 edades imposibles → vacío;
-  topes de origen en 5 variables; 23.688 asociados que salieron sin radicar mezclados en el 0.
+  topes de origen en 5 variables; 23.688 asociados cuyo vínculo terminó la cooperativa de forma unilateral, mezclados en
+  el 0 (no son retiros voluntarios; se medirá el modelo con y sin ellos).
 - **Límites de lo que el modelo puede decir:** asociación, no causalidad; el dataset dice *si* radicó, no *cuándo*
   (falta horizonte de predicción); los activos se observan en dic-2025 y quienes radican en su propio mes.
 
@@ -95,3 +98,4 @@ Nombre de la "startup": _por definir con el equipo_   Repositorio (público): ht
 | 2026-10-31 | Edad fuera de 14–100 → vacío, imputada en el Pipeline | 39 valores imposibles; no se borran filas |
 | 2026-10-31 | Partición 80/20 por asociado, estratificada por radica / activo / salió sin radicar, semilla 42 | Unidad de análisis; misma mezcla en ambos lados |
 | 2026-10-31 | Detalle completo de decisiones del EDA | `reports/01_eda.md` |
+| 2026-10-31 | Confirmado con el equipo: salidas sin radicar = retiro unilateral; montos en millones de pesos; variables sin el mes de radicación | Respuestas de Carlos y Jaqueline; queda por aclarar por qué los porcentajes dividen por antigüedad + 1 |

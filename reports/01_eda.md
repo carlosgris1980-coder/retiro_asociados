@@ -12,8 +12,8 @@
   observado. Los 129.794 activos están todos en **diciembre de 2025**. `antig_meses` = meses entre `cohorte` y
   `anio_mes_proceso` en el 100 % de las filas.
 - **Objetivo y distribución:** `sol_retiro` = 1 en el **20,92 %** (40.591). El 0 mezcla a 129.794 activos (66,9 %) y a
-  **23.688 que salieron sin radicar (12,2 %)**, con un perfil propio: 17 meses de antigüedad mediana y un 32,4 % sin
-  aportes.
+  **23.688 que salieron sin radicar (12,2 %)**: vínculos que la cooperativa terminó de forma unilateral (confirmado por
+  el equipo), con un perfil propio: 17 meses de antigüedad mediana y un 32,4 % sin aportes.
 - **Línea base:** responder siempre "no radica" acierta el 79,1 % y no encuentra a nadie. En negocio, la línea base es
   "contactar a todos" (notebook 01).
 
@@ -30,8 +30,8 @@
 - **Ceros = "no tiene el producto"**: sin crédito 51,8 %, sin ahorro programado 49,9 %, sin cuenta 42,5 %. Las razones
   mínimo/máximo son ambiguas en cero (el 59,9 % de los `rel_min-max_saldo_cartera = 0` nunca tuvo crédito).
 - **El ingreso depende del calendario:** 44.606 ingresos (23,0 %) son exactamente el salario mínimo de un año entre 2017
-  y 2025, y el ingreso mediano sube con el año del registro (de 0,85 en 2017 a 1,6 en 2025). Esto confirma que los montos
-  están en **millones de pesos**.
+  y 2025, y el ingreso mediano sube con el año del registro (de 0,85 en 2017 a 1,6 en 2025). Coincide con que los montos
+  están en **millones de pesos** (confirmado por el equipo).
 - **Redundancias:** visitas y asesorías en sucursal ρ = 0,94; aportes y capitalización ρ = 0,84.
 
 ## Señal
@@ -49,11 +49,13 @@
   reconstruye el mes del registro. Demostración en el notebook 03: con el mismo modelo y validación cruzada de 5
   pliegues sobre el entrenamiento, agregar la fecha de vinculación sube el PR-AUC de 0,716 a 0,906 y el AUC de 0,900 a
   0,977. Es una mejora falsa: el modelo lee cuándo se tomó la foto.
-- **La ventana incluye el mes del registro:** `porc_meses_publiturno × (antig_meses + 1)` es entero en el 96,9 % de las
-  filas. Para quien radica, ese mes es el de la radicación.
+- **Ventana de cálculo (por aclarar):** el equipo confirmó que las variables **no incluyen el mes de radicación**, pero
+  `porc_meses_publiturno × (antig_meses + 1)` es entero en el 96,9 % de las filas (el conteo cubre antigüedad + 1
+  meses). Verificar en la consulta que generó el dataset qué meses cubre la ventana.
 - **Cartera:** entre quienes tuvieron crédito, el 97,3 % de quien radica tiene el mínimo de cartera en cero (activos:
-  68,9 %). Puede ser consecuencia de saldar el crédito para retirarse.
-- **Visitas:** solo el 1,8 % de quien radica nunca visitó una sucursal (activos: 8,5 %).
+  68,9 %). Puede reflejar que saldó el crédito para prepararse a retirarse.
+- **Visitas:** solo el 1,8 % de quien radica nunca visitó una sucursal (activos: 8,5 %). Puede ser señal real o visitas
+  para preparar el retiro.
 - **Ingreso:** el salario mínimo de 2025 solo aparece en registros de 2025; esos asociados radican 5,2 % frente a 21,5 %
   del resto.
 
@@ -65,10 +67,10 @@
 | 2 | Una fila = un asociado; ninguno se repite | Partición por asociado, estratificada por radica / activo / salió, 80/20, semilla 42 | Unidad de análisis; misma mezcla en ambos lados |
 | 3 | Fuera de dic-2025 radica el 62,7 %; en dic-2025, el 0,6 %; `cohorte + antig` = mes del registro (100 %) | Se eliminan `anio_mes_proceso` y `cohorte` | Delatan la respuesta |
 | 4 | Tasa 20,9 %; "siempre no" acierta 79,1 % | Métrica: beneficio neto + PR-AUC; nunca exactitud | La exactitud premia al modelo que no encuentra a nadie |
-| 5 | 23.688 (12,2 %) salieron sin radicar, con perfil propio | Se conservan como 0; marca auxiliar `exit_without_request` | No radicaron; medir con y sin ellos en la etapa 4 |
+| 5 | 23.688 (12,2 %) salieron sin radicar: retiro unilateral de la cooperativa (confirmado) | Se conservan como 0; marca auxiliar `exit_without_request` | Fuera de la pregunta (no es retiro voluntario); medir con y sin ellos en la etapa 4 |
 | 6 | 39 edades imposibles (< 14 o > 100; 10 con 125) | Fuera de 14–100 → vacío; imputación en el Pipeline | Error o centinela; no se borran filas |
 | 7 | Saldo promedio en cero = sin producto (51,8 % sin crédito) | Indicadores `has_loan`, `has_prog_savings`, `has_account` | Distinguir "no tiene" de "tiene poco" |
-| 8 | Ventana incluye el mes del registro (96,9 %); con crédito, 97,3 % de quien radica con cartera mínima cero | Sospechas: medir con y sin en la etapa 4; pedir recalcular a t−1 | Pueden ser consecuencia del trámite |
+| 8 | Con crédito, 97,3 % de quien radica con cartera mínima cero (activos 68,9 %); ventana por aclarar (96,9 % divide por antigüedad + 1) | Sospechas: medir con y sin en la etapa 4 | Pueden reflejar la preparación del retiro |
 | 9 | 23,0 % de ingresos = salario mínimo exacto; ingreso sube con el año | Se conserva; marca auxiliar `income_is_min_wage`; sospecha a medir | Pesos nominales: lleva parte de la fecha |
 | 10 | Topes de origen en 5 variables; colas largas (cartera 1.333, transacciones 531) | No se recortan; log en el Pipeline para modelos sensibles a escala | Ya tratados; valores reales |
 | 11 | 421 capitalizaciones negativas; 306 filas gemelas de asociados distintos | Se conservan | Retiros parciales reales; personas distintas |
@@ -76,8 +78,10 @@
 
 ## Qué queda abierto
 
-- **Confirmar con la fuente:** qué son los 23.688 asociados que salieron sin radicar; si la ventana de las variables
-  incluye el mes de radicación; que los montos están en millones de pesos; el permiso de uso de los datos.
+- **Confirmado por el equipo (31-oct-2026):** los 23.688 que salieron sin radicar son retiros unilaterales de la
+  cooperativa; los montos están en millones de pesos; las variables no incluyen el mes de radicación; el permiso de uso
+  de los datos y el Excel en el repositorio público quedan a cargo del grupo.
+- **Por aclarar:** por qué los porcentajes de meses dividen por antigüedad + 1 (revisar la consulta de origen).
 - **Horizonte de predicción:** el dataset dice *si* el asociado radicó, no *cuándo*. Con el panel mensual se puede
   reconstruir como "variables a la fecha t, ¿radica en los próximos k meses?". Es la mejora de mayor valor.
 - **Etapa 4:** medir con y sin las sospechas de fuga, con y sin quienes salieron sin radicar, una variable por pareja
