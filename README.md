@@ -1,2 +1,14 @@
-# retiro_asociados
-Modelo de clasificación para estimar probabilidad de radicación de solicitudes de retiro en una cooperativa financiera
+## Introducción
+
+Para Confiar, la actividad financiera es el medio que le permite contribuir al Bienvivir, tanto de sus miembros, como de los territorios donde estos se localizan, a través de un portafolio de productos de ahorro y crédito, programas y servicios sociales, culturales y ambientales. El fundamento que sustenta estas acciones es el vínculo asociativo, a través del cual se abre la posibilidad de sumarse a los propósitos de la organización y beneficiarse de estos. Una manifestación concreta del vínculo asociativo son los aportes sociales, es decir, las contribuciones económicas realizadas por quienes deciden, libre y voluntariamente, incorporarse a la cooperativa en calidad de asociados.
+
+La estimación de las tasas de abandono (churn) anual permite observar una estabilización en el retiro de clientes y de saldos de aportes sociales ocurridos en los últimos tres años. Pese a ello, Confiar busca alternativas para mejorar este indicador. Al aplicar las clasificaciones del retiro de clientes propuestas por Lozano (2014) a la realidad de Confiar, se aprecia que el churn en la organización puede contemplarse desde dos perspectivas:
+
+- La magnitud de la ruptura: se puede hacer un retiro parcial o total de saldos de aportes.
+- La voluntad del asociado en la ruptura: las personas pueden retirarse por voluntad propia, o la cooperativa puede actuar unilateralmente por cruces de cuentas o de cartera, por incorrección o por voluntad de los herederos de fallecidos. 
+
+La siguiente tabla presenta los posibles cruces entre ambas perspectivas.
+
+![Imagen descriptiva](tipo_retiro.png)
+
+El *retiro total voluntario* ha recibido especial atención por parte del área comercial y de mercadeo. En la actualidad, tanto los canales presenciales como no presenciales aplican un protocolo de atención a los asociados que quieren abandonar definitivamente la cooperativa. Sin embargo, dicho protocolo es reactivo: es decir, solo se pone en marcha cuando el asociado trata de radicar su solicitud. La literatura consultada muestra que otras cooperativas financieras han evidenciado la misma limitación y que, ante ello, han optado por utilizar las bases de datos de sus miembros para desarrollar ejercicios de Machine Learning que les permitan conocer su conducta, predecir su retiro y, a partir de ello, implementar estrategias reactivas de retención (Tafur y Dairo (2024), Bonilla, Montero y González (2021), Zambrano (2019)). Por esta razón, el ejercicio que se presenta a continuación pretende replicar estas experiencias al interior de Confiar, para lo cual explorará el comportamiento de los clientes que se han asociado entre 2017 y 2025 con el fin de predecir la probabilidad de radicación de solicitudes de retiro total, a partir de la aplicación de seis modelos: Baseline, Regresión Logística, Árbol de Decisiones, Random Forest, KNN Neighbors y Gradient Boosting.
