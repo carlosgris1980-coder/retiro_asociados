@@ -107,16 +107,19 @@ def table(df, decimals: int = 2, pct_cols: list | None = None, col_decimals: dic
 
 
 def rate_by_quantile(x, y, q: int = 10):
-    """Tasa de `y` (0/1) por tramos de igual tamaño de `x` (los empates se reparten por orden de aparición).
+    """Tasa de `y` (0/1) por tramos de `x` cortados en sus cuantiles (hasta `q` tramos).
+
+    Los valores iguales quedan **siempre en el mismo tramo**: si una variable tiene muchos ceros, todos los ceros forman
+    un solo tramo (más grande) y salen menos de `q` tramos. Repartir los empates por el orden de las filas sería un
+    error, porque los datos pueden venir ordenados por la variable respuesta.
 
     Devuelve un DataFrame con la mediana de `x` en cada tramo, la tasa y el número de filas.
-    Sirve para variables con muchos ceros, donde `pd.qcut` no puede crear tramos distintos.
     """
     import pandas as pd
 
     x = pd.Series(x).reset_index(drop=True)
     y = pd.Series(y).reset_index(drop=True)
-    bins = pd.qcut(x.rank(method="first"), q, labels=False)
+    bins = pd.qcut(x, q, labels=False, duplicates="drop")
     out = pd.DataFrame({"x": x, "y": y, "bin": bins}).groupby("bin").agg(
         x_median=("x", "median"), rate=("y", "mean"), n=("y", "size"))
     return out

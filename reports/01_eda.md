@@ -42,6 +42,10 @@
   meses. Las cohortes recientes radican menos porque no han tenido tiempo (censura).
 - El asociado "dormido" (sin aportes, sin movimiento, sin visitas) casi no radica; el riesgo está en el asociado activo
   y transaccional.
+- **Las 21 variables frente a la respuesta** (tasa de radicación por tramos): seis variables de comportamiento la mueven
+  más de 25 puntos entre su tramo más bajo y el más alto (saldo de aportes 34,4; capitalización 31,8 y 31,6; visitas
+  29,7; antigüedad 27,6; asesorías 27,0). Las sociodemográficas, menos de 3. En el ingreso, el tramo de 1,4235 millones
+  (salario mínimo de 2025) cae al 10,9 %: huella del año del registro.
 
 ## Sospechas de fuga de información
 

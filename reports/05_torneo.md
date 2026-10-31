@@ -1,7 +1,8 @@
 # Informe del torneo de modelos
 
 > Resultado de `notebooks/05_torneo.ipynb`. El torneo **descarta**: elige 1–2 finalistas con evidencia, no un campeón
-> definitivo. Cada pliegue de cada modelo: `reports/05_torneo_pliegues.csv`; tabla resumen: `reports/05_torneo_tabla.csv`.
+> definitivo. Código: `src/proyecto/models/train.py` (candidatos, métricas, validación cruzada y lectura contra el ruido).
+> Cada pliegue de cada modelo: `reports/05_torneo_pliegues.csv`; tabla resumen: `reports/05_torneo_tabla.csv`.
 
 ## Reglas del torneo
 
@@ -14,9 +15,10 @@
   elige después, para el modelo ya elegido.
 - **Línea base:** `DummyClassifier(strategy="most_frequent")`, siempre "no radica". No compite: mide cuánto aporta modelar.
   AUC 0,5; PR-AUC 0,2092 (la tasa de radicación); exactitud 79,1 %.
-- **Métricas:** AUC-ROC y PR-AUC (ordenamiento, no dependen del umbral); recall, precisión y F1 de la clase 1 en el umbral
-  por defecto 0,5; puntaje de Brier (calidad de las probabilidades); y la de negocio: **beneficio neto por cada 1.000
-  asociados** con la regla de valor esperado del notebook 01 (contacto $30.000, efectividad 20 %). **Sin exactitud.**
+- **Métricas:** AUC-ROC y PR-AUC (ordenamiento, no dependen del umbral); en el umbral por defecto 0,5, recall, precisión y
+  F1 de cada clase, F1 macro y exactitud balanceada; Brier y log loss (calidad de las probabilidades); y la de negocio:
+  **beneficio neto por cada 1.000 asociados** con la regla de valor esperado del notebook 01 (contacto $30.000,
+  efectividad 20 %), también calculado con el umbral 0,5 para medir cuánto aporta la regla. **Sin exactitud simple.**
 - **Regla:** toda diferencia se compara con la variación entre pliegues; menor que esa variación no es un hallazgo.
 
 ## Tabla comparativa
@@ -25,15 +27,43 @@
 
 | Modelo | AUC (±) | PR-AUC (±) | Recall (0,5) | Precisión (0,5) | F1 (0,5) | Brier | Beneficio neto por 1.000 (±) | Segundos de ajuste* |
 |---|---|---|---|---|---|---|---|---|
-| **Random Forest** | **0,8951** (0,0017) | **0,7015** (0,0064) | 0,5056 | 0,7429 | 0,6016 | **0,1005** | **33,63** (0,74) | 14,9 |
-| Gradient Boosting | 0,8877 (0,0015) | 0,6827 (0,0069) | 0,4713 | 0,7254 | 0,5714 | 0,1044 | 33,58 (0,69) | 48,8 |
-| Regresión Logística | 0,8189 (0,0020) | 0,5145 (0,0047) | 0,2810 | 0,6146 | 0,3856 | 0,1291 | 32,17 (0,64) | 0,9 |
-| K-Vecinos | 0,7921 (0,0015) | 0,4843 (0,0018) | 0,4315 | 0,5769 | 0,4937 | 0,1348 | 27,50 (0,67) | 0,6 (16,6 para predecir) |
-| Árbol de Decisión | 0,6988 (0,0031) | 0,3713 (0,0031) | 0,5289 | 0,5158 | 0,5222 | 0,2024 | 15,39 (0,44) | 2,9 |
-| Baseline (clase mayoritaria) | 0,5000 | 0,2092 | 0 | 0 | 0 | 0,2092 | 0,00 | 0,6 |
+| **Random Forest** | **0,8951** (0,0017) | **0,7015** (0,0064) | 0,5056 | 0,7429 | 0,6016 | **0,1005** | **33,63** (0,74) | 17,3 |
+| Gradient Boosting | 0,8877 (0,0015) | 0,6827 (0,0069) | 0,4713 | 0,7254 | 0,5714 | 0,1044 | 33,58 (0,69) | 46,9 |
+| Regresión Logística | 0,8189 (0,0020) | 0,5145 (0,0047) | 0,2810 | 0,6146 | 0,3856 | 0,1291 | 32,17 (0,64) | 1,0 |
+| K-Vecinos | 0,7921 (0,0015) | 0,4843 (0,0018) | 0,4315 | 0,5769 | 0,4937 | 0,1348 | 27,50 (0,67) | 0,7 (17,9 para predecir) |
+| Árbol de Decisión | 0,6988 (0,0031) | 0,3713 (0,0031) | 0,5289 | 0,5158 | 0,5222 | 0,2024 | 15,39 (0,44) | 3,0 |
+| Baseline (clase mayoritaria) | 0,5000 | 0,2092 | 0 | 0 | 0 | 0,2092 | 0,00 | 0,5 |
 | *Contactar a todos (sin modelo)* | — | — | 1 | 0,209 | — | — | 18,75 (0,62) | — |
 
 \* Los tiempos varían un poco entre ejecuciones.
+
+## Las dos clases y la calidad de las probabilidades
+
+| Modelo | Exactitud balanceada (0,5) | Recall clase 1 | Recall clase 0 | F1 macro | Log loss |
+|---|---|---|---|---|---|
+| Random Forest | 0,7296 | 0,5056 | 0,9537 | 0,7584 | 0,3247 |
+| Gradient Boosting | 0,7121 | 0,4713 | 0,9528 | 0,7410 | 0,3303 |
+| Regresión Logística | 0,6172 | 0,2810 | 0,9534 | 0,6376 | 0,3994 |
+| K-Vecinos | 0,6739 | 0,4315 | 0,9163 | 0,6902 | 0,7605 |
+| Árbol de Decisión | 0,6988 | 0,5289 | 0,8687 | 0,6969 | 2,7960 |
+| Baseline | 0,5000 | 0 | 1 | 0,4416 | 2,8896 |
+
+Ningún modelo descuida a la clase 0 (recall 0,87–0,95). En el umbral 0,5 la logística queda última entre los modelos en
+exactitud balanceada y F1 macro porque sus probabilidades rara vez pasan de 0,5, no por falta de capacidad de ordenar.
+
+## ¿Cuánto aporta la regla de decisión de negocio?
+
+| Modelo | Beneficio con la regla de valor esperado | Beneficio con el umbral 0,5 | Valor de la regla |
+|---|---|---|---|
+| Random Forest | 33,63 | 11,75 | 21,88 |
+| Gradient Boosting | 33,58 | 10,27 | 23,31 |
+| Regresión Logística | 32,17 | 7,56 | 24,61 |
+| K-Vecinos | 27,50 | 10,92 | 16,57 |
+| Árbol de Decisión | 15,39 | 14,92 | 0,47 |
+| Contactar a todos | 18,75 | 18,75 | 0 |
+
+Con el umbral 0,5 ningún modelo supera a contactar a todos; la regla de valor esperado es la que los vuelve rentables.
+Al árbol casi no le suma: sin probabilidades útiles no hay nada que aprovechar (mismo hallazgo que en CreditSight).
 
 ## ¿Coinciden los rankings de negocio y técnico?
 
@@ -45,8 +75,10 @@
 | K-Vecinos | 4 | 4 | 4 | 4 | 4 | 4 | 4 |
 | Árbol de Decisión | 5 | 5 | 5 | 5 | 5 | 1 | 3 |
 
-- **Sí coinciden** en todo lo que no depende del umbral de fábrica. Solo recall y F1 en 0,5 premian al árbol, porque sus
-  probabilidades son 0 o 1 y "dice sí" con facilidad, no porque detecte mejor.
+- **Sí coinciden** en todo lo que no depende del umbral de fábrica (también el log loss, en el mismo orden que el Brier).
+  Las métricas en el umbral 0,5 (recall, F1, exactitud balanceada y F1 macro) suben al árbol, porque sus probabilidades
+  son 0 o 1 y "dice sí" con facilidad, y bajan a la logística al último lugar, porque sus probabilidades rara vez pasan
+  de 0,5. Ninguna de las dos cosas es capacidad: es punto de operación.
 - **Ningún modelo tiene recall nulo**, pero en el umbral 0,5 todos dejan fuera a muchos de quienes radican (la logística
   detecta solo el 28 %): el punto de operación se elige después.
 
@@ -87,7 +119,7 @@ Aun en el peor caso, el modelo supera con holgura a contactar a todos (18,75) y 
 
 | Finalista | Por qué (consistencia, métrica, tiempo, interpretabilidad) | Qué podría cambiar con la optimización |
 |---|---|---|
-| **Random Forest** | Primero en AUC, PR-AUC, Brier, beneficio y esfuerzo; gana a Gradient Boosting en los 5 pliegues en ordenamiento; unos 15 s por ajuste | Limitar profundidad, hojas mínimas y variables por árbol: mejor calibración y un modelo más liviano para la app |
+| **Random Forest** | Primero en AUC, PR-AUC, Brier, beneficio y esfuerzo; gana a Gradient Boosting en los 5 pliegues en ordenamiento; menos de 20 s por ajuste | Limitar profundidad, hojas mínimas y variables por árbol: mejor calibración y un modelo más liviano para la app |
 | **Gradient Boosting** | Segundo en todo; empatado en beneficio con Random Forest (0,8 veces el ruido); la familia que más suele ganar al optimizar | Tasa de aprendizaje, número y profundidad de árboles; la versión histograma entrena mucho más rápido |
 
 **Modelos descartados y por qué:**

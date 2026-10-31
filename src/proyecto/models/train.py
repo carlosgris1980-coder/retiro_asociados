@@ -1,13 +1,24 @@
-"""Pipeline, candidatos del torneo y evaluación con validación cruzada (notebooks 04 y 05).
+"""Torneo de modelos: candidatos, métricas y validación cruzada (notebooks 04 y 05).
 
-Reglas que implementa este módulo:
+Módulo construido sobre el `train.py` del ejemplo del curso (CreditSight), con las tres piezas que pide la clase 3:
+
+1. **Candidatos** (`candidates`): los modelos del README del equipo, con parámetros por defecto.
+2. **Métricas** (`fold_metrics`): la de **negocio** (beneficio neto con la regla de valor esperado, y la misma con el
+   umbral 0,5 para ver cuánto aporta la regla) y las **técnicas** (AUC, PR-AUC, exactitud balanceada, precisión y recall
+   por clase, F1 de la clase 1 y macro, Brier, log loss).
+3. **Validación cruzada** (`evaluate_folds`): los mismos pliegues para todos, una fila por pliegue.
+
+Y las herramientas para leer el resultado contra el ruido: `summarize`, `improvement_over_noise`, `paired_comparison`.
+
+Reglas que implementa:
   - Todos los modelos reciben **exactamente el mismo trato**: las mismas variables, el mismo preprocesamiento
     (`build_feature_pipeline`) y los mismos pliegues.
   - **Ningún modelo recibe tratamiento del desbalance** (ni `class_weight` ni remuestreo): ese ajuste no mejora la
     capacidad de ordenar, solo mueve el punto de operación. El umbral se decide después, para el modelo elegido.
-  - Las métricas de clasificación (recall, precisión, F1) se reportan en el **umbral por defecto (0,5)**, que no es
-    el punto de operación final; las de ordenamiento (AUC, PR-AUC) no dependen del umbral.
-  - La métrica de negocio usa la regla de valor esperado del notebook 01 (`contact_by_expected_value`).
+  - Las métricas de clasificación se reportan en el **umbral por defecto (0,5)**, que no es el punto de operación final;
+    las de ordenamiento (AUC, PR-AUC) no dependen del umbral.
+  - **No se usa la exactitud simple**: con 79 % de la clase mayoritaria premia al modelo que no detecta a nadie. La
+    exactitud **balanceada** (promedio del recall de las dos clases) sí se reporta.
 """
 import time
 
@@ -19,6 +30,7 @@ from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     average_precision_score,
+    balanced_accuracy_score,
     brier_score_loss,
     f1_score,
     log_loss,
@@ -35,8 +47,17 @@ from proyecto.features.engineering import build_feature_pipeline
 from proyecto.models.business import campaign_value, contact_by_expected_value
 
 VALUE_COL = "saldo_aportes"   # lo que se pierde si el asociado radica (notebook 01)
+DEFAULT_THRESHOLD = 0.5       # umbral "de fábrica"; el punto de operación final se elige después
+
+BUSINESS_METRICS = ["beneficio neto (por 1.000)", "beneficio neto, umbral 0,5 (por 1.000)",
+                    "contactos (por 1.000)", "saldo cubierto"]
+TECHNICAL_METRICS = ["AUC", "PR-AUC", "exactitud balanceada", "recall", "precisión", "F1", "recall clase 0",
+                     "precisión clase 0", "F1 macro", "Brier", "log loss"]
 
 
+# ---------------------------------------------------------------------------------------------
+# 1. Candidatos
+# ---------------------------------------------------------------------------------------------
 def candidates(random_state: int = RANDOM_STATE) -> dict:
     """Modelos del torneo (los del README del equipo), con los parámetros por defecto de scikit-learn.
 
@@ -60,38 +81,60 @@ def build_pipeline(model, columns: list[str], log_transform: bool = True, scale:
     ])
 
 
+# ---------------------------------------------------------------------------------------------
+# 2. Métricas
+# ---------------------------------------------------------------------------------------------
 def fold_metrics(y_true, proba, value, contact_cost: float = CONTACT_COST,
-                 retention_rate: float = RETENTION_RATE) -> dict:
-    """Métricas de un pliegue a partir de la probabilidad de radicar (`proba`) y del saldo en riesgo (`value`)."""
+                 retention_rate: float = RETENTION_RATE, threshold: float = DEFAULT_THRESHOLD) -> dict:
+    """Métricas de un pliegue a partir de la probabilidad de radicar (`proba`) y del saldo en riesgo (`value`).
+
+    - Negocio: beneficio neto por cada 1.000 asociados con la **regla de valor esperado** (la del notebook 01) y con
+      la **clase más probable** (umbral 0,5), para medir cuánto aporta la regla de decisión.
+    - Técnicas de ordenamiento (no dependen del umbral): AUC, PR-AUC.
+    - Técnicas de clasificación (umbral 0,5): exactitud balanceada, recall, precisión y F1 de cada clase, F1 macro.
+    - Calidad de las probabilidades: Brier y log loss (la regla de valor esperado usa la probabilidad como número).
+    """
     y_true = np.asarray(y_true).astype(int)
     proba = np.clip(np.asarray(proba, dtype=float), 0.0, 1.0)
-    predicted = (proba >= 0.5).astype(int)
-    contact = contact_by_expected_value(proba, value, contact_cost, retention_rate)
-    money = campaign_value(y_true, contact, value, contact_cost, retention_rate)
+    predicted = (proba >= threshold).astype(int)
     n = len(y_true)
+
+    def money(contact):
+        return campaign_value(y_true, contact, value, contact_cost, retention_rate)
+
+    by_rule = money(contact_by_expected_value(proba, value, contact_cost, retention_rate))
+    by_threshold = money(predicted)
     return {
-        # técnicas de ordenamiento (no dependen del umbral)
+        # negocio
+        "beneficio neto (por 1.000)": by_rule["beneficio_neto"] / n * 1000,
+        "beneficio neto, umbral 0,5 (por 1.000)": by_threshold["beneficio_neto"] / n * 1000,
+        "contactos (por 1.000)": by_rule["contactados"] / n * 1000,
+        "saldo cubierto": by_rule["saldo_cubierto"],
+        # técnicas de ordenamiento
         "AUC": roc_auc_score(y_true, proba),
         "PR-AUC": average_precision_score(y_true, proba),
-        # técnicas de clasificación, en el umbral por defecto 0,5
+        # técnicas de clasificación, en el umbral por defecto
+        "exactitud balanceada": balanced_accuracy_score(y_true, predicted),
         "recall": recall_score(y_true, predicted, zero_division=0),
         "precisión": precision_score(y_true, predicted, zero_division=0),
         "F1": f1_score(y_true, predicted, zero_division=0),
-        # calidad de las probabilidades (la regla de valor esperado las usa como números)
+        "recall clase 0": recall_score(y_true, predicted, pos_label=0, zero_division=0),
+        "precisión clase 0": precision_score(y_true, predicted, pos_label=0, zero_division=0),
+        "F1 macro": f1_score(y_true, predicted, average="macro", zero_division=0),
+        # calidad de las probabilidades
         "Brier": brier_score_loss(y_true, proba),
         "log loss": log_loss(y_true, np.clip(proba, 1e-6, 1 - 1e-6), labels=[0, 1]),
-        # negocio, con la regla de valor esperado (por cada 1.000 asociados evaluados)
-        "beneficio neto (por 1.000)": money["beneficio_neto"] / n * 1000,
-        "contactos (por 1.000)": money["contactados"] / n * 1000,
-        "saldo cubierto": money["saldo_cubierto"],
     }
 
 
+# ---------------------------------------------------------------------------------------------
+# 3. Validación cruzada
+# ---------------------------------------------------------------------------------------------
 def evaluate_folds(pipeline, data: pd.DataFrame, folds: list, train_mask=None, target: str = TARGET,
                    value_col: str = VALUE_COL, return_oof: bool = False):
     """Validación cruzada con pliegues dados. Una fila por pliegue con todas las métricas y los tiempos.
 
-    - `folds`: lista de (índices de entrenamiento, índices de validación), los MISMOS para todo lo que se compara.
+    - `folds`: lista de (índices de ajuste, índices de validación), los MISMOS para todo lo que se compara.
     - `train_mask`: opcional; booleano por fila. Si se da, el modelo se entrena solo con esas filas del pliegue,
       pero se **evalúa siempre en todo el pliegue de validación** (para comparar poblaciones de entrenamiento).
     - `return_oof`: si es True, devuelve además la probabilidad fuera de pliegue de cada fila.
@@ -116,6 +159,35 @@ def evaluate_folds(pipeline, data: pd.DataFrame, folds: list, train_mask=None, t
                      "segundos de ajuste": fit_seconds, "segundos de predicción": predict_seconds})
     table = pd.DataFrame(rows).set_index("pliegue")
     return (table, oof) if return_oof else table
+
+
+def run_tournament(models: dict, columns: list[str], data: pd.DataFrame, folds: list, verbose: bool = True):
+    """Corre todos los candidatos con el mismo pipeline y los mismos pliegues.
+
+    Devuelve (resultados por pliegue de cada modelo, probabilidades fuera de pliegue de cada modelo).
+    """
+    by_fold, oof = {}, {}
+    for name, model in models.items():
+        start = time.perf_counter()
+        by_fold[name], oof[name] = evaluate_folds(build_pipeline(model, columns), data, folds, return_oof=True)
+        if verbose:
+            print(f"{name:30s} listo en {time.perf_counter() - start:5.0f} s")
+    return by_fold, oof
+
+
+# ---------------------------------------------------------------------------------------------
+# Lectura contra el ruido
+# ---------------------------------------------------------------------------------------------
+def summarize(by_fold: dict, metrics: list[str]) -> pd.DataFrame:
+    """Tabla con una fila por modelo: media y desviación entre pliegues (`± métrica`) de cada métrica pedida."""
+    rows = {}
+    for name, table in by_fold.items():
+        row = {}
+        for metric in metrics:
+            row[metric] = table[metric].mean()
+            row[f"± {metric}"] = table[metric].std()
+        rows[name] = row
+    return pd.DataFrame(rows).T
 
 
 def improvement_over_noise(reference, variant, higher_is_better: bool = True) -> dict:
