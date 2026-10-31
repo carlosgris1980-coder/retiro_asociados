@@ -1,0 +1,56 @@
+{
+  "columns": [
+    "saldo_aportes",
+    "porc_meses_capitaliza_aportes",
+    "antig_meses",
+    "saldo_ahorro_prog",
+    "prom_saldo_ahorro_prog",
+    "rel_min-max_ahorro_prog",
+    "saldo_cta",
+    "prom_saldo_cta",
+    "rel_min-max_saldo_cta",
+    "prom_saldo_cartera",
+    "rel_min-max_saldo_cartera",
+    "porc_meses_publiturno",
+    "prom_trx",
+    "edad",
+    "femenino",
+    "ingresos",
+    "asalariado",
+    "ed_superior",
+    "zona_med",
+    "has_loan",
+    "has_prog_savings",
+    "has_account",
+    "in_risk_window",
+    "is_dormant",
+    "savings_to_contributions",
+    "account_balance_trend",
+    "prog_savings_trend"
+  ],
+  "engineered_kept": [
+    "in_risk_window",
+    "is_dormant",
+    "savings_to_contributions",
+    "account_balance_trend",
+    "prog_savings_trend"
+  ],
+  "engineered_discarded": [
+    "n_products",
+    "contributions_to_income"
+  ],
+  "dropped_redundant": [
+    "prom_asesorias_publiturno",
+    "prom_saldo_capitalizacion_aportes"
+  ],
+  "log_transform": true,
+  "scale": true,
+  "train_without_unilateral_exits": false,
+  "leakage_suspects_kept": [
+    "porc_meses_publiturno",
+    "rel_min-max_saldo_cartera",
+    "ingresos",
+    "account_balance_trend",
+    "prog_savings_trend"
+  ]
+}

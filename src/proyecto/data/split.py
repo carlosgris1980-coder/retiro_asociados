@@ -32,6 +32,21 @@ def split_by_group(
     return train, test
 
 
+def make_folds(
+    df: pd.DataFrame,
+    group_col: str = ID_COL,
+    strat_col: str = "stratum",
+    n_splits: int = 5,
+    seed: int = RANDOM_STATE,
+) -> list[tuple]:
+    """Pliegues de validación cruzada por entidad y estratificados. Se crean UNA vez y se reutilizan en todo."""
+    splitter = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=seed)
+    folds = list(splitter.split(df, df[strat_col], groups=df[group_col]))
+    for train_idx, valid_idx in folds:
+        assert_disjoint(df.iloc[train_idx], df.iloc[valid_idx], group_col=group_col)
+    return folds
+
+
 def assert_disjoint(*frames: pd.DataFrame, group_col: str = ID_COL) -> None:
     """Falla si alguna entidad aparece en más de una partición."""
     seen: set = set()

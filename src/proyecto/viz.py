@@ -61,6 +61,12 @@ def pct_axis(ax, axis: str = "y", decimals: int = 0) -> None:
     (ax.yaxis if axis == "y" else ax.xaxis).set_major_formatter(fmt)
 
 
+def decimal_axis(ax, axis: str = "y", decimals: int = 1) -> None:
+    """Formatea un eje con coma decimal (0,2 en lugar de 0.2)."""
+    fmt = FuncFormatter(lambda v, _: fmt_num(v, decimals))
+    (ax.yaxis if axis == "y" else ax.xaxis).set_major_formatter(fmt)
+
+
 def thousands_axis(ax, axis: str = "y") -> None:
     """Formatea un eje de conteos con punto de miles (14.000)."""
     fmt = FuncFormatter(lambda v, _: fmt_num(v))
@@ -78,15 +84,21 @@ def fmt_num(value: float, decimals: int = 0) -> str:
     return text.replace(",", "_").replace(".", ",").replace("_", ".")
 
 
-def table(df, decimals: int = 2, pct_cols: list | None = None):
-    """Tabla con formato en español (coma decimal, punto de miles); `pct_cols` se muestran como porcentaje."""
+def table(df, decimals: int = 2, pct_cols: list | None = None, col_decimals: dict | None = None):
+    """Tabla con formato en español (coma decimal, punto de miles).
+
+    `pct_cols` se muestran como porcentaje; `col_decimals` fija los decimales de columnas puntuales.
+    """
     import pandas as pd
 
     pct_cols = pct_cols or []
+    col_decimals = col_decimals or {}
     formats = {}
     for c in df.select_dtypes("number").columns:
         if c in pct_cols:
             formats[c] = lambda v: fmt_pct(v)
+        elif c in col_decimals:
+            formats[c] = lambda v, d=col_decimals[c]: fmt_num(v, d)
         elif pd.api.types.is_integer_dtype(df[c]):
             formats[c] = lambda v: fmt_num(v, 0)
         else:

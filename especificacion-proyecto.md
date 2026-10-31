@@ -99,3 +99,5 @@ Nombre de la "startup": _por definir con el equipo_   Repositorio (público): ht
 | 2026-10-31 | Partición 80/20 por asociado, estratificada por radica / activo / salió sin radicar, semilla 42 | Unidad de análisis; misma mezcla en ambos lados |
 | 2026-10-31 | Detalle completo de decisiones del EDA | `reports/01_eda.md` |
 | 2026-10-31 | Confirmado con el equipo: salidas sin radicar = retiro unilateral; montos en millones de pesos; variables sin el mes de radicación | Respuestas de Carlos y Jaqueline; queda por aclarar por qué los porcentajes dividen por antigüedad + 1 |
+| 2026-10-31 | 27 variables: se agregan 5 nuevas, se quitan 2 redundantes, se conservan las sospechas (con condiciones) y los retiros unilaterales en el entrenamiento | Mejora / ruido medido en `reports/04_features.md` |
+| 2026-10-31 | Finalistas del torneo: Random Forest y Gradient Boosting; la Regresión Logística queda como referencia interpretable | `reports/05_torneo.md`: empatan en beneficio neto; la logística cuesta 1,46 millones por 1.000 asociados |
