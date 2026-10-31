@@ -11,11 +11,12 @@ La siguiente tabla presenta los posibles cruces entre ambas perspectivas.
 
 ![Imagen descriptiva](tipo_retiro.png)
 
-El *retiro total voluntario* ha recibido especial atención por parte del área comercial y de mercadeo. En la actualidad, tanto los canales presenciales como no presenciales aplican un protocolo de atención a los asociados que quieren abandonar definitivamente la cooperativa. Sin embargo, dicho protocolo es reactivo: es decir, solo se pone en marcha cuando el asociado trata de radicar su solicitud. La literatura consultada muestra que otras cooperativas financieras han evidenciado la misma limitación y que, ante ello, han optado por utilizar las bases de datos de sus miembros para desarrollar ejercicios de Machine Learning que les permitan conocer su conducta, predecir su retiro y, a partir de ello, implementar estrategias reactivas de retención (Tafur y Dairo (2024), Bonilla, Montero y González (2021), Zambrano (2019)). Por esta razón, el ejercicio que se presenta a continuación pretende replicar estas experiencias al interior de Confiar, para lo cual explorará el comportamiento de los clientes que se han asociado entre 2017 y 2025 con el fin de predecir la probabilidad de radicación de solicitudes de retiro total, a partir de la aplicación de seis modelos: Baseline, Regresión Logística, Árbol de Decisiones, Random Forest, KNN Neighbors y Gradient Boosting.
+El *retiro total voluntario* ha recibido especial atención por parte del área comercial y de mercadeo. En la actualidad, tanto los canales presenciales como no presenciales aplican un protocolo de atención a los asociados que quieren abandonar definitivamente la cooperativa. Sin embargo, dicho protocolo es reactivo: es decir, solo se pone en marcha cuando el asociado trata de radicar su solicitud. La literatura consultada muestra que otras cooperativas financieras han evidenciado la misma limitación y que, ante ello, han optado por utilizar las bases de datos de sus miembros para desarrollar ejercicios de Machine Learning que les permitan conocer su conducta, predecir su retiro y, a partir de ello, implementar estrategias reactivas de retención (Tafur y Dairo (2024), Bonilla, Montero y González (2021), Zambrano (2019)). Por esta razón, el ejercicio que se presenta a continuación pretende replicar estas experiencias al interior de Confiar, para lo cual explorará el comportamiento de los clientes que se han asociado entre 2017 y 2025 con el fin de predecir la probabilidad de radicación de solicitudes de retiro total, a partir de la aplicación de seis modelos: Baseline, Regresión Logística, Árbol de Decisiones, Random Forest, KNN Neighbors y Gradient Boosting. Una vez identificado el modelo qué más se ajusta al caso de negocio, se procederá a incorporarlo en una aplicación que facilite la estimación de la probabilidad de radicación de solicitud de retiro de los asociados. 
 
-## Objetivo
+## Objetivos
 
-Predecir la probabilidad de que un asociado de Confiar decida radicar una solicitud de retiro total e identificar los factores que propician su retención.
+Predecir la probabilidad de que un asociado de Confiar decida radicar una solicitud de retiro total e identificar los factores que propician su retención mediante el uso de una aplicación.
+
 
 ## Instrumentos
 
@@ -90,5 +91,37 @@ Todos los campos son numéricos. Antes de iniciar con el modelado, es preciso re
 ![Imagen descriptiva](tipo_retiro.png)
 
 El dataset ajustado tiene 193.910 registros. El 20,93% de estos posee radicación de *solicitud de retiro total*.
+
+## Ajuste de primera versión con apoyo de IA
+
+Se desarrolló un primer ejercicio del proyecto que requería bastantes ajustes (`model_selection_classification_template.ipynb`). Con base en los resultados de la primera fase, y con el apoyo de Claude, se obtuvo una versión optimizada que constituye el resultado definitivo del proyecto (`Confiar_prediccion_retiro_v2.ipynb`).
+
+## Tareas pendientes
+
+Los elementos contenidos en el repositorio muestran avances en cuanto al propósito de predecir la probabilidad de que un asociado de Confiar decida radicar una solicitud de retiro total e identificar los factores que propician su retención. Sin embargo, no se ha avanzado en el diseño de una aplicación que permita la implementación de un modelo de clasificación en la cotidianidad de la cooperativa. Se espera, entonces, que todo el material compilado en este repositorio aporte al avance en dicha dirección.
+
+## Bibliografía
+
+Bonilla, N., Montero, E., González, J. (2021). Pronóstico del retiro de un asociado a partir de las principales condiciones comerciales y socioeconómicas. Los Libertadores Fundación Universitaria. Bogotá, Colombia. 
+
+[https://repository.libertadores.edu.co/server/api/core/bitstreams/8d2654b1-9563-4ba6-8c5f-f4bbf37f4799/content](https://repository.libertadores.edu.co/server/api/core/bitstreams/8d2654b1-9563-4ba6-8c5f-f4bbf37f4799/content)
+
+Customer Churn Prediction, disponible en [https://www.kaggle.com/code/nishakumarids/customer-churn-prediction](https://www.kaggle.com/code/nishakumarids/customer-churn-prediction)
+
+Fajardo, D., Motta, A. (2019). Modelo de abandono de clientes en una empresa de créditos en línea. Universidad de los Andes. Bogotá, Colombia. 
+
+[https://repositorio.uniandes.edu.co/entities/publication/0233f1e9-4a2b-41ec-b1d6-4b27ed508a90](https://repositorio.uniandes.edu.co/entities/publication/0233f1e9-4a2b-41ec-b1d6-4b27ed508a90) 
+
+Tafur, M., Dairo, W. (2024). Clusterización y aplicación de modelos predictivos para la identificación de factores que conlleven a una desafiliación de una cooperativa financiera. Universidad Nacional Abierta y a Distancia (UNAD). 
+
+[https://repository.unad.edu.co/jspui/bitstream/10596/67241/1/wdmorenot.pdf](https://repository.unad.edu.co/jspui/bitstream/10596/67241/1/wdmorenot.pdf) 
+
+Raza, M., Manoj, J., Singh, A., Blumenstock, J. (2015). Behavioral Modeling for Churn Prediction: Early Indicators and Accurate Predictors of Custom Defection and Loyalty. 2015 Institute of Electrical and Electronics Engineers International Conference on Services Economics (SE).  
+
+[https://arxiv.org/pdf/1512.06430](https://arxiv.org/pdf/1512.06430)
+ 
+Zambrano, Karol. "Fidelización en el sector cooperativo de carácter institucional en Ecuador". Estudios de la Gestión: revista internacional de administración. 6 (II Semestre, 2019): 111-133. 
+
+[https://repositorio.uasb.edu.ec/items/9b891aa1-1753-46eb-b48f-d56f72dbb173](https://repositorio.uasb.edu.ec/items/9b891aa1-1753-46eb-b48f-d56f72dbb173) 
 
 
