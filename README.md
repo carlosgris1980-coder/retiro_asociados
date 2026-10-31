@@ -88,7 +88,7 @@ Todos los campos son numéricos. Antes de iniciar con el modelado, es preciso re
 
 ## Dataset
 
-![Imagen descriptiva](tipo_retiro.png)
+![Imagen descriptiva](solicitud_retiro.png)
 
 El dataset ajustado tiene 193.910 registros. El 20,93% de estos posee radicación de *solicitud de retiro total*.
 
