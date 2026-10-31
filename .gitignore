@@ -15,6 +15,10 @@ __pycache__/
 data/raw/*
 !data/raw/.gitkeep
 
+# Datos procesados: se regeneran con notebooks/03_preprocesamiento.ipynb (no se versionan)
+data/processed/*
+!data/processed/.gitkeep
+
 # Sistema operativo y editores
 .DS_Store
 Thumbs.db

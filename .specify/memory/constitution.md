@@ -1,4 +1,4 @@
-# [NOMBRE DEL PROYECTO] — Constitución
+# retiro_asociados (Confiar) — Constitución
 
 > **Borrador sembrado con las reglas del curso.** Su primer trabajo con Spec Kit es **ajustarla a su grupo**:
 > ejecuten `/speckit-constitution` y pídanle, por ejemplo: *«Ajusta esta constitución a mi proyecto: nombre
@@ -14,7 +14,9 @@
 reproducibilidad.
 
 ### II. Se parte por la unidad de análisis
-La unidad de análisis de este proyecto es **[una fila es …]** y la entidad que se repite es **[columna o «ninguna»]**.
+La unidad de análisis de este proyecto es **el asociado (una fila por asociado)** y la entidad que se repite es
+**ninguna** (`associate_id`, sustituto del `Nit`; 194.073 distintos en 194.073 filas). Aun así la partición se hace por
+`associate_id`, para que siga siendo correcta si el dataset se reconstruye como panel mensual.
 Si una entidad aparece en varias filas, la partición y la validación cruzada MUST hacerse por grupo
 (`GroupShuffleSplit`, `GroupKFold`, `StratifiedGroupKFold`), nunca por fila. Una prueba automática MUST verificar que
 ninguna entidad cae en dos particiones. *Razón:* partir por fila filtra información y infla la métrica.
@@ -42,11 +44,20 @@ Textos y comentarios en español; nombres de código en inglés. *Razón:* la au
 Ni la IA ni el grupo MUST fabricar cifras, columnas ni métricas. Lo que no se pudo medir se dice. *Razón:* un número
 inventado en el informe invalida todo lo demás.
 
-<!-- Principio VIII (opcional): una regla propia del grupo, por ejemplo sobre sesgos, equidad o el uso responsable del modelo. -->
+### VIII. El modelo prioriza, no excluye (propuesta, pendiente de aprobación del grupo)
+El resultado del modelo MUST usarse solo para **ordenar** a quién contactar primero en la campaña de fidelización;
+MUST NOT usarse para negar productos, servicios o atención a ningún asociado. Los supuestos económicos (costo del
+contacto, efectividad de la retención) MUST mostrarse junto a toda cifra en pesos, y las variables sociodemográficas
+(sexo, edad, zona, educación, ocupación) MUST revisarse por error por segmento antes de desplegar. Ninguna variable que
+se mida en el mes de la radicación o después MUST entrar al modelo sin haberse medido con y sin ella.
+*Razón:* el modelo afecta la relación con los asociados de una cooperativa y describe asociaciones, no causas.
 
 ## Restricciones del proyecto
 
-- **Caso:** [pregunta de negocio en una frase] · **Métrica principal:** [métrica y por qué] · **Tipo de problema:** [clasificación / regresión / clusterización].
+- **Caso:** ¿qué asociados de Confiar tienen mayor probabilidad de radicar la solicitud de retiro total, para que el
+  equipo de fidelización los contacte primero y conserve la mayor cantidad de aportes? · **Métrica principal:** beneficio
+  neto por cada 1.000 asociados con la regla de valor esperado (traduce los dos errores a dinero; control técnico:
+  PR-AUC) · **Tipo de problema:** clasificación binaria.
 - **Entorno:** Python 3.12; dependencias fijadas en `requirements.txt`.
 - **Seguimiento de experimentos:** MLflow en Databricks (o local si no hay conexión); la app **no** consulta Databricks.
 - **App:** Streamlit, cargando `models/model.joblib` desde el repositorio.
@@ -66,4 +77,4 @@ Esta constitución prevalece sobre otras prácticas del proyecto. Una enmienda s
 justifica y se anota en la sección 7 de `especificacion-proyecto.md`. El instructor puede pedir aclaraciones sobre
 cualquier principio en los puntos de control.
 
-**Versión**: 0.1.0 (borrador) | **Ratificada**: [fecha] | **Última enmienda**: [fecha]
+**Versión**: 0.2.0 (borrador ajustado al caso) | **Ratificada**: pendiente (el grupo la revisa con `/speckit-constitution`) | **Última enmienda**: 2026-10-31

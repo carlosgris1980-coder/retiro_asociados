@@ -20,6 +20,17 @@ Este archivo lo lees al inicio de cada conversación. Sigue estas reglas siempre
 - Para revisar uso los subagentes de `.claude/agents/` (`auditor-de-fuga`, `escritor-de-pruebas`, `revisor-de-codigo-ia`);
   sus informes no reemplazan que yo entienda el código.
 
+## Contexto de este proyecto (resumen; el detalle manda en `especificacion-proyecto.md`)
+
+- **Caso:** retiro total de aportes de asociados de Confiar. Objetivo `sol_retiro` (20,9 % radica). Una fila = un
+  asociado; `Nit` se elimina al cargar y se usa `associate_id`. Dataset: `data/raw/bd_confiar_2.xlsx` (fuera de Git).
+- **Métrica principal:** beneficio neto por 1.000 asociados (`src/proyecto/models/business.py`); control técnico PR-AUC.
+  Los supuestos económicos viven en `src/proyecto/config.py` y siempre se muestran junto a las cifras en pesos.
+- **Fuga:** `anio_mes_proceso` y `cohorte` nunca entran al modelo. Las sospechas de `config.LEAKAGE_SUSPECTS` y
+  `ingresos` se miden con y sin ellas antes de usarlas.
+- **Gráficos:** siguen `especificaciones/estilo-graficos.md` (`src/proyecto/viz.py`): el título dice la conclusión.
+- **Entorno:** `.venv` con Python 3.12 (`uv venv --python 3.12 .venv` + `uv pip install -r requirements.txt`).
+
 ## Estructura obligatoria del repositorio
 
 ```text
