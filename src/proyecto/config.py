@@ -64,6 +64,40 @@ MIN_WAGE_BY_YEAR = {
     2022: 1.000000, 2023: 1.160000, 2024: 1.300000, 2025: 1.423500,
 }
 
+# --- Inferencia y app (notebook 09) ----------------------------------------------------------
+# Rango POSIBLE de cada entrada (conocimiento del analista, no de los datos): fuera de él la predicción se niega.
+# Montos en millones de COP; porcentajes y razones entre 0 y 1; antigüedad hasta 50 años de vinculación.
+POSSIBLE_RANGE = {
+    "saldo_aportes": (0, 10_000), "porc_meses_capitaliza_aportes": (0, 1), "antig_meses": (0, 600),
+    "saldo_ahorro_prog": (0, 10_000), "prom_saldo_ahorro_prog": (0, 10_000), "rel_min-max_ahorro_prog": (0, 1),
+    "saldo_cta": (0, 10_000), "prom_saldo_cta": (0, 10_000), "rel_min-max_saldo_cta": (0, 1),
+    "prom_saldo_cartera": (0, 10_000), "rel_min-max_saldo_cartera": (0, 1), "porc_meses_publiturno": (0, 1),
+    "prom_trx": (0, 10_000), "edad": PLAUSIBLE_RANGE["edad"], "femenino": (0, 1), "ingresos": (0, 1_000),
+    "asalariado": (0, 1), "ed_superior": (0, 1), "zona_med": (0, 1),
+}
+BINARY_INPUTS = ["femenino", "asalariado", "ed_superior", "zona_med"]
+INPUT_LABELS = {
+    "saldo_aportes": "Saldo de aportes (millones de COP)",
+    "porc_meses_capitaliza_aportes": "Fracción de meses en que capitalizó aportes (0 a 1)",
+    "antig_meses": "Antigüedad como asociado (meses)",
+    "saldo_ahorro_prog": "Saldo actual de ahorro programado y CDT (millones)",
+    "prom_saldo_ahorro_prog": "Saldo promedio de ahorro programado y CDT (millones)",
+    "rel_min-max_ahorro_prog": "Ahorro programado: saldo mínimo / máximo (0 a 1)",
+    "saldo_cta": "Saldo actual de la cuenta de ahorro (millones)",
+    "prom_saldo_cta": "Saldo promedio de la cuenta de ahorro (millones)",
+    "rel_min-max_saldo_cta": "Cuenta de ahorro: saldo mínimo / máximo (0 a 1)",
+    "prom_saldo_cartera": "Saldo promedio de crédito (millones)",
+    "rel_min-max_saldo_cartera": "Crédito: saldo mínimo / máximo (0 a 1)",
+    "porc_meses_publiturno": "Fracción de meses con visita a sucursal (0 a 1)",
+    "prom_trx": "Transacciones promedio al mes",
+    "edad": "Edad (años)",
+    "femenino": "Sexo femenino",
+    "ingresos": "Ingresos mensuales (millones)",
+    "asalariado": "Asalariado",
+    "ed_superior": "Educación superior",
+    "zona_med": "Vive en la zona Medellín",
+}
+
 # --- Caso de negocio (notebook 01) ------------------------------------------------------------
 # Unidad monetaria: millones de pesos colombianos (confirmado por el equipo el 31-oct-2026; coincide con los
 # ingresos, cuyos valores más frecuentes son el SMMLV de cada año).

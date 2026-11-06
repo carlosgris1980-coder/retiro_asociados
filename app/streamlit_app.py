@@ -51,10 +51,18 @@ def label(schema: dict, column: str) -> str:
     return schema.get("labels", {}).get(column, column)
 
 
-def numeric_field(schema: dict, column: str, key: str):
-    """Un campo numérico con su rango y mediana, y una casilla 'no sé' que deja el dato vacío."""
+def numeric_field(schema: dict, column: str, key: str, default=None):
+    """Un campo numérico con su rango y un valor inicial (el del perfil elegido o la mediana), y una casilla 'no sé'.
+
+    Las columnas binarias del esquema (`binary_columns`) se preguntan como Sí / No.
+    """
+    if column in schema.get("binary_columns", []):
+        options = ["No", "Sí", UNKNOWN]
+        start = 1 if default == 1 else 0
+        choice = st.selectbox(label(schema, column), options, index=start, key=key)
+        return np.nan if choice == UNKNOWN else float(choice == "Sí")
     low, high = schema.get("valid_range", {}).get(column) or schema["observed_range"][column]
-    default = float(schema["median"][column])
+    default = float(schema["median"][column] if default is None else default)
     is_int = column in schema.get("integer_columns", [])
     if high <= low:
         high = low + 1
@@ -67,24 +75,49 @@ def numeric_field(schema: dict, column: str, key: str):
     return st.number_input(label(schema, column), min_value=float(low), max_value=float(high), value=float(default), key=key)
 
 
-def build_form(schema: dict) -> dict:
-    """Dibuja el formulario (tres columnas) y devuelve una fila de entrada."""
+def build_form(schema: dict, profile: dict | None = None, profile_key: str = "") -> dict:
+    """Dibuja el formulario (tres columnas) y devuelve una fila de entrada. `profile` da los valores iniciales."""
     row = {}
+    profile = profile or {}
     columns = schema["numeric"] + schema["categorical"]
     cols = st.columns(3)
     for i, column in enumerate(columns):
         with cols[i % 3]:
             if column in schema["categorical"]:
                 options = schema["categories"][column] + [UNKNOWN]
-                choice = st.selectbox(label(schema, column), options, key=f"cat_{column}")
+                choice = st.selectbox(label(schema, column), options, key=f"cat_{column}_{profile_key}")
                 row[column] = np.nan if choice == UNKNOWN else choice
             else:
-                row[column] = numeric_field(schema, column, f"num_{column}")
+                row[column] = numeric_field(schema, column, f"num_{column}_{profile_key}", profile.get(column))
     return row
 
 
+def show_expected_value_result(first: pd.Series, schema: dict) -> None:
+    """Resultado con la regla de valor esperado: contactar o no, probabilidad y valor esperado frente al costo."""
+    rule = schema["decision_rule"]
+    positive = schema["class_names"][1]
+    probability = float(first[f"proba_{positive}"])
+    left, right = st.columns(2)
+    with left:
+        st.metric("Decisión sugerida", str(first["decision"]).capitalize())
+        st.metric(f"Probabilidad de que {positive}", f"{probability:.1%}".replace(".", ","))
+    with right:
+        value = first["expected_value"]
+        if np.isnan(value):
+            st.warning("Sin el saldo de aportes no se puede calcular el valor esperado del contacto: **revisar**.")
+        else:
+            st.metric("Valor esperado del contacto (millones de COP)", f"{value:,.3f}".replace(",", "_").replace(".", ",").replace("_", "."))
+            st.caption(f"Se contacta si supera el costo del contacto: **{rule['contact_cost']:g} millones** "
+                       f"(probabilidad × efectividad de {rule['retention_rate']:.0%} × saldo de aportes).")
+        if bool(first["needs_review"]):
+            st.warning("**Revisión recomendada:** el modelo duda o falta un dato clave.")
+    with st.expander("¿Cómo se decide?"):
+        st.markdown(schema.get("decision_explanation", "Regla de valor esperado."))
+
+
 def main() -> None:
-    st.set_page_config(page_title="Mi proyecto", page_icon="🧭", layout="wide")
+    title = schema_module.load_schema(SCHEMA_PATH).get("app_title", "Mi proyecto") if SCHEMA_PATH.exists() else "Mi proyecto"
+    st.set_page_config(page_title=title, page_icon="🧭", layout="wide")
 
     if not MODEL_PATH.exists() or not SCHEMA_PATH.exists():
         st.title("Mi proyecto")
@@ -96,10 +129,13 @@ def main() -> None:
 
     model, schema = get_model(), get_schema()
     st.title(schema.get("app_title", "Mi proyecto"))
-    st.caption("Herramienta de apoyo a la decisión. **No decide por sí sola.**")
+    st.caption(schema.get("app_subtitle", "Herramienta de apoyo a la decisión. **No decide por sí sola.**"))
 
+    examples = schema.get("examples", {})
+    choice = st.selectbox("Empezar desde un perfil de ejemplo", ["(valores típicos)"] + list(examples)) if examples else None
+    profile = examples.get(choice) if choice in examples else None
     with st.form("entrada"):
-        row = build_form(schema)
+        row = build_form(schema, profile, profile_key=str(list(examples).index(choice)) if profile else "base")
         submitted = st.form_submit_button("Evaluar", type="primary")
 
     if not submitted:
@@ -114,6 +150,13 @@ def main() -> None:
 
     first = result.iloc[0]
     class_names = schema["class_names"]
+    if "expected_value" in result.columns:
+        show_expected_value_result(first, schema)
+        for message in result.attrs.get("warnings", []):
+            st.warning(message)
+        with st.expander("Uso responsable"):
+            st.markdown(schema.get("responsible_use", DEFAULT_RESPONSIBLE_USE))
+        return
     left, right = st.columns(2)
     with left:
         st.metric("Resultado sugerido", str(first["decision"]))

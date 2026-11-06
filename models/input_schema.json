@@ -1,0 +1,326 @@
+{
+  "numeric": [
+    "saldo_aportes",
+    "porc_meses_capitaliza_aportes",
+    "antig_meses",
+    "saldo_ahorro_prog",
+    "prom_saldo_ahorro_prog",
+    "rel_min-max_ahorro_prog",
+    "saldo_cta",
+    "prom_saldo_cta",
+    "rel_min-max_saldo_cta",
+    "prom_saldo_cartera",
+    "rel_min-max_saldo_cartera",
+    "porc_meses_publiturno",
+    "prom_trx",
+    "edad",
+    "femenino",
+    "ingresos",
+    "asalariado",
+    "ed_superior",
+    "zona_med"
+  ],
+  "categorical": [],
+  "class_names": [
+    "no radica",
+    "radica"
+  ],
+  "categories": {},
+  "observed_range": {
+    "saldo_aportes": [
+      0.0,
+      38.320776
+    ],
+    "porc_meses_capitaliza_aportes": [
+      0.0,
+      1.0
+    ],
+    "antig_meses": [
+      0.0,
+      107.0
+    ],
+    "saldo_ahorro_prog": [
+      0.0,
+      30.0
+    ],
+    "prom_saldo_ahorro_prog": [
+      0.0,
+      27.9
+    ],
+    "rel_min-max_ahorro_prog": [
+      0.0,
+      1.0
+    ],
+    "saldo_cta": [
+      0.0,
+      35.0
+    ],
+    "prom_saldo_cta": [
+      0.0,
+      10.0
+    ],
+    "rel_min-max_saldo_cta": [
+      0.0,
+      1.0
+    ],
+    "prom_saldo_cartera": [
+      0.0,
+      1333.3333333333333
+    ],
+    "rel_min-max_saldo_cartera": [
+      0.0,
+      1.0
+    ],
+    "porc_meses_publiturno": [
+      0.0,
+      1.0
+    ],
+    "prom_trx": [
+      0.0,
+      335.4
+    ],
+    "edad": [
+      14.0,
+      96.0
+    ],
+    "femenino": [
+      0.0,
+      1.0
+    ],
+    "ingresos": [
+      0.5,
+      22.0
+    ],
+    "asalariado": [
+      0.0,
+      1.0
+    ],
+    "ed_superior": [
+      0.0,
+      1.0
+    ],
+    "zona_med": [
+      0.0,
+      1.0
+    ]
+  },
+  "median": {
+    "saldo_aportes": 0.539787,
+    "porc_meses_capitaliza_aportes": 0.25,
+    "antig_meses": 35.0,
+    "saldo_ahorro_prog": 0.0,
+    "prom_saldo_ahorro_prog": 7.928571428571431e-07,
+    "rel_min-max_ahorro_prog": 0.0,
+    "saldo_cta": 0.0,
+    "prom_saldo_cta": 0.000523,
+    "rel_min-max_saldo_cta": 0.0,
+    "prom_saldo_cartera": 0.0,
+    "rel_min-max_saldo_cartera": 0.0,
+    "porc_meses_publiturno": 0.13636363636363635,
+    "prom_trx": 1.4514162077104642,
+    "edad": 40.0,
+    "femenino": 1.0,
+    "ingresos": 1.5,
+    "asalariado": 1.0,
+    "ed_superior": 0.0,
+    "zona_med": 0.0
+  },
+  "integer_columns": [
+    "antig_meses",
+    "edad",
+    "femenino",
+    "asalariado",
+    "ed_superior",
+    "zona_med"
+  ],
+  "valid_range": {
+    "saldo_aportes": [
+      0.0,
+      10000.0
+    ],
+    "porc_meses_capitaliza_aportes": [
+      0.0,
+      1.0
+    ],
+    "antig_meses": [
+      0.0,
+      600.0
+    ],
+    "saldo_ahorro_prog": [
+      0.0,
+      10000.0
+    ],
+    "prom_saldo_ahorro_prog": [
+      0.0,
+      10000.0
+    ],
+    "rel_min-max_ahorro_prog": [
+      0.0,
+      1.0
+    ],
+    "saldo_cta": [
+      0.0,
+      10000.0
+    ],
+    "prom_saldo_cta": [
+      0.0,
+      10000.0
+    ],
+    "rel_min-max_saldo_cta": [
+      0.0,
+      1.0
+    ],
+    "prom_saldo_cartera": [
+      0.0,
+      10000.0
+    ],
+    "rel_min-max_saldo_cartera": [
+      0.0,
+      1.0
+    ],
+    "porc_meses_publiturno": [
+      0.0,
+      1.0
+    ],
+    "prom_trx": [
+      0.0,
+      10000.0
+    ],
+    "edad": [
+      14.0,
+      100.0
+    ],
+    "femenino": [
+      0.0,
+      1.0
+    ],
+    "ingresos": [
+      0.0,
+      1000.0
+    ],
+    "asalariado": [
+      0.0,
+      1.0
+    ],
+    "ed_superior": [
+      0.0,
+      1.0
+    ],
+    "zona_med": [
+      0.0,
+      1.0
+    ]
+  },
+  "labels": {
+    "saldo_aportes": "Saldo de aportes (millones de COP)",
+    "porc_meses_capitaliza_aportes": "Fracción de meses en que capitalizó aportes (0 a 1)",
+    "antig_meses": "Antigüedad como asociado (meses)",
+    "saldo_ahorro_prog": "Saldo actual de ahorro programado y CDT (millones)",
+    "prom_saldo_ahorro_prog": "Saldo promedio de ahorro programado y CDT (millones)",
+    "rel_min-max_ahorro_prog": "Ahorro programado: saldo mínimo / máximo (0 a 1)",
+    "saldo_cta": "Saldo actual de la cuenta de ahorro (millones)",
+    "prom_saldo_cta": "Saldo promedio de la cuenta de ahorro (millones)",
+    "rel_min-max_saldo_cta": "Cuenta de ahorro: saldo mínimo / máximo (0 a 1)",
+    "prom_saldo_cartera": "Saldo promedio de crédito (millones)",
+    "rel_min-max_saldo_cartera": "Crédito: saldo mínimo / máximo (0 a 1)",
+    "porc_meses_publiturno": "Fracción de meses con visita a sucursal (0 a 1)",
+    "prom_trx": "Transacciones promedio al mes",
+    "edad": "Edad (años)",
+    "femenino": "Sexo femenino",
+    "ingresos": "Ingresos mensuales (millones)",
+    "asalariado": "Asalariado",
+    "ed_superior": "Educación superior",
+    "zona_med": "Vive en la zona Medellín"
+  },
+  "review_threshold": 0.55,
+  "binary_columns": [
+    "femenino",
+    "asalariado",
+    "ed_superior",
+    "zona_med"
+  ],
+  "examples": {
+    "Perfil de bajo riesgo": {
+      "saldo_aportes": 1.532,
+      "porc_meses_capitaliza_aportes": 1.0,
+      "antig_meses": 35.0,
+      "saldo_ahorro_prog": 0.3024,
+      "prom_saldo_ahorro_prog": 0.2483,
+      "rel_min-max_ahorro_prog": 0.0348,
+      "saldo_cta": 28.9718,
+      "prom_saldo_cta": 2.3747,
+      "rel_min-max_saldo_cta": 0.0001,
+      "prom_saldo_cartera": 6.4526,
+      "rel_min-max_saldo_cartera": 0.1341,
+      "porc_meses_publiturno": 0.7222,
+      "prom_trx": 50.5556,
+      "edad": 21.0,
+      "femenino": 1,
+      "ingresos": 2.3261,
+      "asalariado": 1,
+      "ed_superior": 0,
+      "zona_med": 1
+    },
+    "Perfil de riesgo intermedio": {
+      "saldo_aportes": 3.251,
+      "porc_meses_capitaliza_aportes": 0.0526,
+      "antig_meses": 37.0,
+      "saldo_ahorro_prog": 0.0,
+      "prom_saldo_ahorro_prog": 0.0,
+      "rel_min-max_ahorro_prog": 0.0,
+      "saldo_cta": 0.0009,
+      "prom_saldo_cta": 0.0009,
+      "rel_min-max_saldo_cta": 1.0,
+      "prom_saldo_cartera": 5.5962,
+      "rel_min-max_saldo_cartera": 0.0,
+      "porc_meses_publiturno": 0.2105,
+      "prom_trx": 1.4737,
+      "edad": 45.0,
+      "femenino": 0,
+      "ingresos": 1.7172,
+      "asalariado": 1,
+      "ed_superior": 0,
+      "zona_med": 1
+    },
+    "Perfil de alto riesgo": {
+      "saldo_aportes": 0.2889,
+      "porc_meses_capitaliza_aportes": 0.2703,
+      "antig_meses": 36.0,
+      "saldo_ahorro_prog": 0.0,
+      "prom_saldo_ahorro_prog": 0.2894,
+      "rel_min-max_ahorro_prog": 0.0,
+      "saldo_cta": 0.0,
+      "prom_saldo_cta": 0.0,
+      "rel_min-max_saldo_cta": 0.0,
+      "prom_saldo_cartera": 0.0,
+      "rel_min-max_saldo_cartera": 0.0,
+      "porc_meses_publiturno": 0.1892,
+      "prom_trx": 0.7027,
+      "edad": 46.0,
+      "femenino": 1,
+      "ingresos": 1.0,
+      "asalariado": 0,
+      "ed_superior": 1,
+      "zona_med": 0
+    }
+  },
+  "decision_rule": {
+    "type": "valor_esperado",
+    "value_column": "saldo_aportes",
+    "contact_cost": 0.03,
+    "retention_rate": 0.2,
+    "label_yes": "contactar",
+    "label_no": "no contactar",
+    "label_unknown": "revisar: falta el saldo de aportes"
+  },
+  "app_title": "Priorización de contacto para la retención de asociados",
+  "app_subtitle": "Estima la probabilidad de que un asociado radique la solicitud de retiro total y sugiere si conviene contactarlo antes. **Apoya la decisión del equipo de fidelización; no decide por sí sola.**",
+  "decision_explanation": "El modelo estima la probabilidad de que el asociado radique la solicitud de retiro total. Se sugiere **contactar** si *probabilidad × 20% (efectividad de la retención) × saldo de aportes* supera el costo de un contacto (**0.03 millones**. es decir $30.000). Así. dos asociados con la misma probabilidad no valen lo mismo si uno tiene diez veces más aportes. Los supuestos de costo y efectividad deben confirmarse con un piloto con grupo de control.",
+  "responsible_use": "- La herramienta **prioriza a quién contactar**; la decisión y la conversación son del asesor.\n- **No** debe usarse para negar productos o servicios a ningún asociado.\n- Describe asociaciones, no causas: no dice *por qué* se iría un asociado.\n- En asociados con menos de 7 meses de antigüedad encuentra solo a la mitad de quienes radican: para ellos, usar también una estrategia de bienvenida.\n- Límites completos en `models/ficha_modelo.md`.",
+  "model": {
+    "registro": "retiro_asociados_rf",
+    "version": 1,
+    "alias": "champion",
+    "decisiones_congeladas": "2026-11-05T20:35:20"
+  }
+}

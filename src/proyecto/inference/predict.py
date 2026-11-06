@@ -13,12 +13,21 @@ Uso:
     resultado = predict_with_scores(filas_nuevas, model, schema)
 
 Funciona con cualquier clasificador de scikit-learn (o un Pipeline) que tenga `predict_proba`.
+
+Adaptaciones para el caso de retiro de asociados (Confiar):
+  - `prepare_inputs` calcula los indicadores de tenencia de producto (`has_loan`, `has_prog_savings`, `has_account`) a
+    partir de los saldos promedio, igual que la limpieza del notebook 03: quien usa la app no tiene que digitarlos.
+  - Si el esquema trae `decision_rule` de tipo `valor_esperado`, la decisión es la del negocio (notebook 01):
+    **contactar si probabilidad de radicar × efectividad × saldo de aportes > costo del contacto**. Sin saldo no se puede
+    calcular el valor esperado: la fila queda marcada para revisión.
 """
 from pathlib import Path
 
 import joblib
 import numpy as np
 import pandas as pd
+
+from proyecto.config import PRODUCT_FLAGS
 
 
 class InputValidationError(ValueError):
@@ -63,6 +72,30 @@ def validate_inputs(df: pd.DataFrame, schema: dict) -> list[str]:
     return warnings
 
 
+def prepare_inputs(df: pd.DataFrame, flags: dict = PRODUCT_FLAGS) -> pd.DataFrame:
+    """Agrega las columnas derivadas que el modelo espera y que una persona no tiene por qué digitar.
+
+    Los indicadores de tenencia (1 si el saldo promedio es mayor que cero) se calculan solo si falta la columna y existe
+    su saldo de origen. Si el saldo es desconocido (vacío), el indicador queda vacío y el pipeline lo imputa.
+    """
+    out = df.copy()
+    for name, source in flags.items():
+        if name not in out.columns and source in out.columns:
+            values = pd.to_numeric(out[source], errors="coerce")
+            out[name] = np.where(values.isna(), np.nan, (values > 0).astype(float))
+    return out
+
+
+def apply_expected_value_rule(probability: np.ndarray, value, rule: dict) -> pd.DataFrame:
+    """Regla de valor esperado: contactar si probabilidad × efectividad × saldo > costo del contacto."""
+    value = pd.to_numeric(pd.Series(value), errors="coerce").to_numpy(dtype=float)
+    expected = probability * rule["retention_rate"] * value
+    decision = np.where(np.isnan(expected), rule.get("label_unknown", "revisar: falta el saldo"),
+                        np.where(expected > rule["contact_cost"], rule.get("label_yes", "contactar"),
+                                 rule.get("label_no", "no contactar")))
+    return pd.DataFrame({"decision": decision, "expected_value": expected})
+
+
 def decide_min_cost(proba: np.ndarray, cost_matrix) -> np.ndarray:
     """Elige la clase de menor costo esperado: argmin_j sum_i p_i * costo(i, j)."""
     return np.argmin(proba @ np.asarray(cost_matrix, dtype=float), axis=1)
@@ -89,13 +122,24 @@ def predict_with_scores(df: pd.DataFrame, model, schema: dict) -> pd.DataFrame:
     """
     warnings = validate_inputs(df, schema)
     class_names = schema["class_names"]
-    proba = _ordered_proba(model, df, class_names)
+    proba = _ordered_proba(model, prepare_inputs(df), class_names)
     most_likely = proba.argmax(axis=1)
+    out = pd.DataFrame(proba, columns=[f"proba_{c}" for c in class_names], index=df.index)
+
+    rule = schema.get("decision_rule")
+    if rule and rule.get("type") == "valor_esperado":
+        # Decisión del negocio: depende de la probabilidad de la clase positiva y del saldo de cada asociado
+        decided = apply_expected_value_rule(proba[:, 1], df[rule["value_column"]].to_numpy(), rule)
+        out.insert(0, "decision", decided["decision"].to_numpy())
+        out["most_likely"] = [class_names[i] for i in most_likely]
+        out["expected_value"] = decided["expected_value"].to_numpy()
+        out["contact_cost"] = rule["contact_cost"]
+        out["needs_review"] = (proba.max(axis=1) < schema.get("review_threshold", 0.55)) | np.isnan(out["expected_value"])
+        out.attrs["warnings"] = warnings
+        return out
 
     cost = schema.get("cost_matrix")
     decision = decide_min_cost(proba, cost) if cost is not None else most_likely
-
-    out = pd.DataFrame(proba, columns=[f"proba_{c}" for c in class_names], index=df.index)
     out.insert(0, "decision", [class_names[i] for i in decision])
     out["most_likely"] = [class_names[i] for i in most_likely]
     if cost is not None:
