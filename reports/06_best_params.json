@@ -1,0 +1,60 @@
+{
+  "modelo": "Random Forest",
+  "decision": "optimizados",
+  "parametros": {
+    "n_estimators": 200,
+    "max_depth": 14,
+    "min_samples_leaf": 15,
+    "max_features": 0.26903030509194253,
+    "max_samples": 0.9260903439550088
+  },
+  "mejor_ensayo": 19,
+  "metrica_optimizada": "PR-AUC",
+  "restriccion": "brecha PR-AUC <= 0.1",
+  "pr_auc_cv": 0.6966454000931535,
+  "brecha_pr_auc_cv": 0.08808624894446164,
+  "comprobacion_reservados": [
+    {
+      "modelo": "partida (por defecto)",
+      "PR-AUC (reservados)": 0.6993,
+      "PR-AUC (lo que vio)": 1.0,
+      "brecha PR-AUC": 0.3007,
+      "AUC (reservados)": 0.8937,
+      "Brier": 0.101,
+      "beneficio neto (por 1.000)": 33.4446,
+      "recall (0,5)": 0.5074,
+      "precisión (0,5)": 0.7395,
+      "contactos para detectar el 75 %": 10567,
+      "segundos de ajuste": 14.8689
+    },
+    {
+      "modelo": "optimizado",
+      "PR-AUC (reservados)": 0.6971,
+      "PR-AUC (lo que vio)": 0.7707,
+      "brecha PR-AUC": 0.0737,
+      "AUC (reservados)": 0.8932,
+      "Brier": 0.1022,
+      "beneficio neto (por 1.000)": 33.4374,
+      "recall (0,5)": 0.4778,
+      "precisión (0,5)": 0.7477,
+      "contactos para detectar el 75 %": 10639,
+      "segundos de ajuste": 35.2989
+    },
+    {
+      "modelo": "optimizado + class_weight",
+      "PR-AUC (reservados)": 0.689,
+      "PR-AUC (lo que vio)": 0.7475,
+      "brecha PR-AUC": 0.0585,
+      "AUC (reservados)": 0.8916,
+      "Brier": 0.1319,
+      "beneficio neto (por 1.000)": 32.1812,
+      "recall (0,5)": 0.8209,
+      "precisión (0,5)": 0.513,
+      "contactos para detectar el 75 %": 10725,
+      "segundos de ajuste": 38.0829
+    }
+  ],
+  "tracking": "local",
+  "experimento": "retiro-asociados-optimizacion",
+  "mlflow_parent_run_id": "3f5190cb46d74fdbac918d07f8692b97"
+}

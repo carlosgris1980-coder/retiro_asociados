@@ -48,6 +48,7 @@ from proyecto.models.business import campaign_value, contact_by_expected_value
 
 VALUE_COL = "saldo_aportes"   # lo que se pierde si el asociado radica (notebook 01)
 DEFAULT_THRESHOLD = 0.5       # umbral "de fábrica"; el punto de operación final se elige después
+TRAIN_SAMPLE = 30_000         # filas de ajuste con las que se mide la brecha de sobreajuste (muestra fija)
 
 BUSINESS_METRICS = ["beneficio neto (por 1.000)", "beneficio neto, umbral 0,5 (por 1.000)",
                     "contactos (por 1.000)", "saldo cubierto"]
@@ -127,17 +128,36 @@ def fold_metrics(y_true, proba, value, contact_cost: float = CONTACT_COST,
     }
 
 
+def contacts_for_recall(y_true, proba, target_recall: float = 0.75) -> dict:
+    """Asociados que hay que contactar para detectar al menos `target_recall` de quienes radican.
+
+    Se marca a todos los que superan un umbral, así que los empates (misma probabilidad) entran o salen juntos:
+    ordenarlos uno por uno haría depender el resultado del orden de las filas.
+    """
+    from sklearn.metrics import precision_recall_curve
+
+    y_true = np.asarray(y_true).astype(int)
+    proba = np.asarray(proba, dtype=float)
+    _, recall_curve, thresholds = precision_recall_curve(y_true, proba)
+    threshold = thresholds[np.where(recall_curve[:-1] >= target_recall)[0][-1]]
+    flagged = proba >= threshold
+    return {"umbral": float(threshold), "contactos": int(flagged.sum()), "recall alcanzado": y_true[flagged].sum() / y_true.sum(),
+            "precisión": float(y_true[flagged].mean()), "falsas alarmas": int(flagged.sum() - y_true[flagged].sum())}
+
+
 # ---------------------------------------------------------------------------------------------
 # 3. Validación cruzada
 # ---------------------------------------------------------------------------------------------
 def evaluate_folds(pipeline, data: pd.DataFrame, folds: list, train_mask=None, target: str = TARGET,
-                   value_col: str = VALUE_COL, return_oof: bool = False):
+                   value_col: str = VALUE_COL, return_oof: bool = False, train_metrics: bool = False):
     """Validación cruzada con pliegues dados. Una fila por pliegue con todas las métricas y los tiempos.
 
     - `folds`: lista de (índices de ajuste, índices de validación), los MISMOS para todo lo que se compara.
     - `train_mask`: opcional; booleano por fila. Si se da, el modelo se entrena solo con esas filas del pliegue,
       pero se **evalúa siempre en todo el pliegue de validación** (para comparar poblaciones de entrenamiento).
     - `return_oof`: si es True, devuelve además la probabilidad fuera de pliegue de cada fila.
+    - `train_metrics`: si es True, mide también AUC y PR-AUC **en la parte de ajuste** y la **brecha** (ajuste −
+      validación). Una brecha grande es sobreajuste: el modelo aprende detalles del entrenamiento que no generalizan.
     """
     y = data[target].to_numpy()
     value = data[value_col].to_numpy(dtype=float)
@@ -155,8 +175,18 @@ def evaluate_folds(pipeline, data: pd.DataFrame, folds: list, train_mask=None, t
         proba = model.predict_proba(data.iloc[valid_idx])[:, 1]
         predict_seconds = time.perf_counter() - start
         oof[valid_idx] = proba
-        rows.append({"pliegue": fold, **fold_metrics(y[valid_idx], proba, value[valid_idx]),
-                     "segundos de ajuste": fit_seconds, "segundos de predicción": predict_seconds})
+        row = {"pliegue": fold, **fold_metrics(y[valid_idx], proba, value[valid_idx]),
+               "segundos de ajuste": fit_seconds, "segundos de predicción": predict_seconds}
+        if train_metrics:
+            # Muestra fija de la parte de ajuste (hasta TRAIN_SAMPLE filas): mide lo mismo y cuesta mucho menos
+            sample = fit_idx if len(fit_idx) <= TRAIN_SAMPLE else \
+                np.random.default_rng(RANDOM_STATE + fold).choice(fit_idx, TRAIN_SAMPLE, replace=False)
+            fit_proba = model.predict_proba(data.iloc[sample])[:, 1]
+            row["AUC (ajuste)"] = roc_auc_score(y[sample], fit_proba)
+            row["PR-AUC (ajuste)"] = average_precision_score(y[sample], fit_proba)
+            row["brecha AUC"] = row["AUC (ajuste)"] - row["AUC"]
+            row["brecha PR-AUC"] = row["PR-AUC (ajuste)"] - row["PR-AUC"]
+        rows.append(row)
     table = pd.DataFrame(rows).set_index("pliegue")
     return (table, oof) if return_oof else table
 

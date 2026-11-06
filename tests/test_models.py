@@ -12,6 +12,7 @@ from proyecto.models.train import (
     TECHNICAL_METRICS,
     build_pipeline,
     candidates,
+    contacts_for_recall,
     evaluate_folds,
     fold_metrics,
     improvement_over_noise,
@@ -104,6 +105,15 @@ def test_tournament_uses_same_folds_and_summary_has_mean_and_noise():
     assert list(table.columns) == ["AUC", "± AUC", "PR-AUC", "± PR-AUC"]
     assert table.loc["base", "AUC"] == pytest.approx(0.5)
     assert table.loc["logística", "AUC"] > table.loc["base", "AUC"]
+
+
+def test_contacts_for_recall_keeps_ties_together():
+    # 4 radican; probabilidades con un empate en 0,5 que mezcla radica y no radica
+    y = np.array([1, 1, 0, 1, 0, 1, 0, 0])
+    p = np.array([0.9, 0.8, 0.5, 0.5, 0.5, 0.5, 0.1, 0.0])
+    out = contacts_for_recall(y, p, target_recall=0.75)
+    assert out["contactos"] == 6                     # entran los cuatro empatados en 0,5, no solo los necesarios
+    assert out["recall alcanzado"] == 1.0 and out["falsas alarmas"] == 2
 
 
 def test_improvement_and_paired_comparison_signs():

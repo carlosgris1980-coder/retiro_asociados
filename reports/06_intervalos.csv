@@ -1,0 +1,7 @@
+comparación,métrica,diferencia,IC 95 % inferior,IC 95 % superior,lectura
+optimizado − partida (por defecto),PR-AUC,-0.0021746132849901345,-0.005920509693531728,0.0014062440792147936,no se distinguen
+optimizado − partida (por defecto),beneficio neto (por 1.000),-0.007181249516946764,-0.1360947378590752,0.12178170153291494,no se distinguen
+optimizado − partida (por defecto),Brier,0.001167561437030909,0.0007300742518318932,0.001659030021136481,a favor de la segunda
+optimizado + class_weight − optimizado,PR-AUC,-0.00805957317265349,-0.00958416467185923,-0.006404752645904439,a favor de la segunda
+optimizado + class_weight − optimizado,beneficio neto (por 1.000),-1.2561604379750122,-1.4133514490532064,-1.0928159728197853,a favor de la segunda
+optimizado + class_weight − optimizado,Brier,0.029739391965760337,0.028045160214096664,0.031282058335917864,a favor de la segunda
