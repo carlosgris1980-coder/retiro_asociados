@@ -1,0 +1,53 @@
+{
+  "fecha_y_hora": "2026-11-05T21:02:15",
+  "donde": "local",
+  "experimento": "retiro-asociados-modelo-final",
+  "modelo_registrado": "retiro_asociados_rf",
+  "version": 1,
+  "alias": "champion",
+  "ejecucion": "7bfca02731c243728892ec2e6c70223d",
+  "uri_del_modelo": "models:/retiro_asociados_rf@champion",
+  "columnas_de_entrada": [
+    "saldo_aportes",
+    "porc_meses_capitaliza_aportes",
+    "antig_meses",
+    "saldo_ahorro_prog",
+    "prom_saldo_ahorro_prog",
+    "rel_min-max_ahorro_prog",
+    "saldo_cta",
+    "prom_saldo_cta",
+    "rel_min-max_saldo_cta",
+    "prom_saldo_cartera",
+    "rel_min-max_saldo_cartera",
+    "porc_meses_publiturno",
+    "prom_trx",
+    "edad",
+    "femenino",
+    "ingresos",
+    "asalariado",
+    "ed_superior",
+    "zona_med",
+    "has_loan",
+    "has_prog_savings",
+    "has_account"
+  ],
+  "ida_y_vuelta_ok": true,
+  "modelo": "Random Forest",
+  "parametros": {
+    "n_estimators": 200,
+    "max_depth": 14,
+    "min_samples_leaf": 15,
+    "max_features": 0.26903030509194253,
+    "max_samples": 0.9260903439550088
+  },
+  "calibrado": false,
+  "regla_de_decision": "contactar si p × 0.2 × saldo_aportes > 0.03 (millones de COP)",
+  "decisiones_congeladas": "2026-11-05T20:35:20",
+  "prueba": "Prueba abierta el 2026-11-05T20:36:06 · modelo Random Forest · 38.815 asociados. Una sola vez.",
+  "metricas_prueba": {
+    "PR-AUC": 0.7004301390535355,
+    "AUC": 0.8958101775724376,
+    "beneficio neto (por 1.000)": 33.601094860234454,
+    "Brier": 0.10137536665221132
+  }
+}
