@@ -1,0 +1,107 @@
+{
+  "modelo_final": "Random Forest",
+  "decisiones_congeladas": "2026-11-05T20:35:20",
+  "prueba": {
+    "asociados": 38815,
+    "radicaron": 8118,
+    "marca": "Prueba abierta el 2026-11-05T20:36:06 · modelo Random Forest · 38.815 asociados. Una sola vez."
+  },
+  "metricas_modelo": {
+    "beneficio neto (por 1.000)": 33.601094860234454,
+    "beneficio neto, umbral 0,5 (por 1.000)": 10.227533556614711,
+    "contactos (por 1.000)": 410.4083472884194,
+    "saldo cubierto": 0.9410631470010963,
+    "AUC": 0.8958101775724376,
+    "PR-AUC": 0.7004301390535355,
+    "exactitud balanceada": 0.722365828770721,
+    "recall": 0.48792806109879283,
+    "precisión": 0.7491961414790996,
+    "F1": 0.5909735173442745,
+    "recall clase 0": 0.9568035964426491,
+    "precisión clase 0": 0.8760140777857314,
+    "F1 macro": 0.7528008886838149,
+    "Brier": 0.10137536665221132,
+    "log loss": 0.3207497247064425
+  },
+  "metricas_baseline": {
+    "beneficio neto (por 1.000)": 0.0,
+    "beneficio neto, umbral 0,5 (por 1.000)": 0.0,
+    "contactos (por 1.000)": 0.0,
+    "saldo cubierto": 0.0,
+    "AUC": 0.5,
+    "PR-AUC": 0.20914594873116063,
+    "exactitud balanceada": 0.5,
+    "recall": 0.0,
+    "precisión": 0.0,
+    "F1": 0.0,
+    "recall clase 0": 1.0,
+    "precisión clase 0": 0.7908540512688393,
+    "F1 macro": 0.44160720451145125,
+    "Brier": 0.20914594873116063,
+    "log loss": 2.8894588537052517
+  },
+  "beneficio_contactar_a_todos_por_1000": 18.78880383872215,
+  "intervalos": [
+    {
+      "qué": "modelo final",
+      "métrica": "PR-AUC",
+      "valor": 0.7004301390535355,
+      "IC 95 % inferior": 0.6900715750210304,
+      "IC 95 % superior": 0.7112570618435887
+    },
+    {
+      "qué": "modelo final",
+      "métrica": "AUC",
+      "valor": 0.8958101775724376,
+      "IC 95 % inferior": 0.8926604690719548,
+      "IC 95 % superior": 0.8989598842396762
+    },
+    {
+      "qué": "modelo final",
+      "métrica": "Brier",
+      "valor": 0.10137536665221132,
+      "IC 95 % inferior": 0.09977813192864227,
+      "IC 95 % superior": 0.10305913567538333
+    },
+    {
+      "qué": "modelo final",
+      "métrica": "beneficio neto (por 1.000)",
+      "valor": 33.601094860234454,
+      "IC 95 % inferior": 31.81175765941002,
+      "IC 95 % superior": 35.39502846270772
+    },
+    {
+      "qué": "modelo − baseline",
+      "métrica": "PR-AUC",
+      "valor": 0.4912841903223748,
+      "IC 95 % inferior": 0.4818684360103355,
+      "IC 95 % superior": 0.5003201050188173
+    },
+    {
+      "qué": "modelo − contactar a todos",
+      "métrica": "beneficio neto (por 1.000)",
+      "valor": 14.812291021512305,
+      "IC 95 % inferior": 14.610532482287779,
+      "IC 95 % superior": 15.003260354373307
+    }
+  ],
+  "supera_referencias_con_confianza": true,
+  "campaña": {
+    "contactados": 15930.0,
+    "VP": 6142.0,
+    "FP": 9788.0,
+    "FN": 1976.0,
+    "valor_conservado": 1782.1264970000002,
+    "costo_campaña": 477.9,
+    "beneficio_neto": 1304.226497,
+    "saldo_en_riesgo": 9468.687105,
+    "saldo_cubierto": 0.9410631470010963
+  },
+  "detectar_75": {
+    "umbral": 0.30370591597398094,
+    "contactos": 10523,
+    "recall alcanzado": 0.7500615915250062,
+    "precisión": 0.5786372707402831,
+    "falsas alarmas": 4434
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "fecha_y_hora": "2026-11-05T20:35:20",
+  "modelo_final": "Random Forest",
+  "parametros": {
+    "n_estimators": 200,
+    "max_depth": 14,
+    "min_samples_leaf": 15,
+    "max_features": 0.26903030509194253,
+    "max_samples": 0.9260903439550088
+  },
+  "origen_parametros": "notebook 06: optimizados (misma PR-AUC y beneficio que los de partida en reservados, brecha 0,30 -> 0,07)",
+  "calibrar": false,
+  "calibracion_en_reservados": [
+    {
+      "variante": "sin calibrar",
+      "log loss": 0.32431,
+      "Brier": 0.10217,
+      "PR-AUC": 0.69709,
+      "beneficio neto (por 1.000)": 33.43738,
+      "contactos (por 1.000)": 410.45987,
+      "beneficio: diferencia vs sin calibrar": NaN,
+      "IC 95 % inferior": NaN,
+      "IC 95 % superior": NaN
+    },
+    {
+      "variante": "sigmoid",
+      "log loss": 0.32917,
+      "Brier": 0.10221,
+      "PR-AUC": 0.69522,
+      "beneficio neto (por 1.000)": 33.37036,
+      "contactos (por 1.000)": 378.30736,
+      "beneficio: diferencia vs sin calibrar": -0.06702,
+      "IC 95 % inferior": -0.24359,
+      "IC 95 % superior": 0.11366
+    },
+    {
+      "variante": "isotonic",
+      "log loss": 0.32048,
+      "Brier": 0.10115,
+      "PR-AUC": 0.69508,
+      "beneficio neto (por 1.000)": 33.66384,
+      "contactos (por 1.000)": 387.81399,
+      "beneficio: diferencia vs sin calibrar": 0.22647,
+      "IC 95 % inferior": 0.07114,
+      "IC 95 % superior": 0.35557
+    }
+  ],
+  "metrica_principal": "beneficio neto por cada 1.000 asociados (regla de valor esperado)",
+  "metricas_de_control": [
+    "PR-AUC",
+    "AUC",
+    "Brier"
+  ],
+  "regla_de_decision": "contactar si p × 0.2 × saldo_aportes > 0.03 (millones de COP)",
+  "supuestos": {
+    "costo_contacto": 0.03,
+    "efectividad_retencion": 0.2
+  },
+  "como_se_decidio": "validación cruzada (notebooks 04-06) y 25 % de asociados reservados (semilla 7); la prueba no se miró"
+}
